@@ -10,6 +10,11 @@
 - O adaptador de visão não inicializa o backend opcional sounddevice/PortAudio;
   os executáveis também o excluem. Essa medida evita inicializar áudio por um
   import transitivo e não é um bloqueio geral de rede da biblioteca nativa.
+- Na amostra sintética Linux de 27/10/2026 foram observadas tentativas de conexão
+  HTTPS no processo de diagnóstico. Não houve captura do conteúdo dos pacotes;
+  a origem exata e o comportamento em sessões longas permanecem em investigação.
+  Não afirmamos que a beta nunca estabeleça conexões externas. O fornecedor
+  [declara processamento das imagens no dispositivo e métricas de uso/desempenho](https://developers.google.com/edge/mediapipe/solutions/tasks#mediapipe_tasks_privacy_notice).
 - O fundo preparado fica em memória durante a sessão. Não é salvo como foto.
 - user_settings.json guarda escolhas de câmera/qualidade/efeito; pode incluir
   o identificador local da webcam. Não faz parte do Git ou pacote.

@@ -184,3 +184,8 @@ e [exceção GCC](https://www.gnu.org/licenses/gcc-exception-3.1.html).
 A seleção precisa ser confirmada novamente no inventário do pacote que será
 publicado. Esta revisão não remove a pendência de rede do MediaPipe nem substitui
 os testes físicos. `distribution_ready=false` permanece.
+
+O inventário da beta Linux identificou Tcl/Tk 8.6. Os textos oficiais de licença
+8.6.12 foram incluídos separadamente em `packaging/notices`, além dos avisos 9.x
+usados nas outras receitas. Os pacotes gerados para download devem preservar
+esses textos; não se presume que todos os sistemas usem o mesmo Tcl/Tk.

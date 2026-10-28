@@ -1,6 +1,6 @@
 # Fora de Cena
 
-> **Branch de testes `testing/mac-linux`.** Mac e Linux estão em validação.
+> **Candidata 0.5.0-beta.1.** Mac e Linux estão em validação experimental.
 > Os downloads publicados continuam sendo a versão Windows 0.4.0.
 > Os fontes desta branch preparam a candidata **0.5.0-beta.1**, ainda sem lançamento.
 > Veja o [estado dos testes e critérios de lançamento](MULTIPLATAFORMA.md).

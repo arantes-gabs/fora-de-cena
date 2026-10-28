@@ -11,8 +11,8 @@ anúncio de suporte nativo aprovado para Mac/Linux nem nova tag de versão.
 | Windows x64 | EXE portátil e instalador por usuário | Compilação e autotestes da beta passaram; teste físico da atualização pendente |
 | Mac Apple Silicon | APP dentro de DMG | OpenCV enxuto, inferência e autoteste do APP da beta passaram; teste físico desta compilação pendente |
 | Mac Intel x86_64 | APP dentro de DMG | Colisão na receita nativa identificada; correção em teste; não bloqueia os demais pacotes |
-| Linux x86_64 | TAR.GZ com executável e recursos | OpenCV/NumPy enxutos e inferência passaram; investigação da amostra de rede bloqueou o empacotamento |
-| Linux ARM64 | TAR.GZ com executável e recursos | OpenCV/NumPy enxutos e inferência passaram; investigação da amostra de rede bloqueou o empacotamento |
+| Linux x86_64 | TAR.GZ com executável e recursos | OpenCV/NumPy enxutos, inferência, compilação e autoteste passaram; beta experimental, teste físico pendente |
+| Linux ARM64 | TAR.GZ com executável e recursos | OpenCV/NumPy enxutos, inferência, compilação e autoteste passaram; beta experimental, teste físico pendente |
 
 O estado será atualizado com resultados reais e links das execuções. Check verde
 de CI não certifica câmera, chamada ou desempenho em todos os computadores.
@@ -55,7 +55,9 @@ e autorização do proprietário.
    restauração, OBS/câmera virtual e chamada com outro participante.
 5. Documentação, versão interna, nomes dos pacotes e hashes consistentes.
 
-Somente depois desses critérios será definida uma nova versão/tag e uma Release.
+Esses critérios definem a aprovação de uma versão final. Uma beta pode ser
+preparada para avaliação, com limitações e pendências declaradas e sem apresentar
+plataformas não testadas como suporte confirmado.
 A tag `v0.4.0` não será movida ou sobrescrita. A primeira candidata pode usar
 uma versão como `v0.5.0-beta.1`; o lançamento dependerá da validação e indicará
 somente as plataformas efetivamente aprovadas. Intel pode seguir experimental
@@ -156,3 +158,21 @@ adicional classifica conexões locais/externas e portas, sem publicar endereços
 Testes de execução, hashes, barreiras de arquivos privados e licenças exigidas
 continuam bloqueando um pacote inválido. A versão final continua dependendo da
 revisão das pendências; o proprietário revisa o rascunho antes de qualquer publicação.
+
+## Base da entrega beta — testes essenciais concluídos
+
+[Rodada validada](https://github.com/arantes-gabs/fora-de-cena/actions/runs/40618688421),
+commit `652bf93`: Windows x64, Mac Apple Silicon, Linux x64 e Linux ARM64 passaram
+na compilação e no autoteste dos pacotes. O job Intel dessa rodada é apenas a
+sondagem de dependências, **não** um build aprovado; a tentativa nativa anterior
+segue separada.
+
+O inventário Linux ARM64 confirmou Tcl/Tk 8.6; seus avisos oficiais foram
+acrescentados aos avisos já existentes. A amostra Linux registrou tentativas
+HTTPS, sem captura de payload e sem atribuição definitiva. A beta mantém esse
+resultado e a pendência de rede explícitos em PRIVACY.md.
+
+Para entregar agora: gerar o rascunho baixável e conferir câmera/chamada com os
+testadores. Para acompanhamento: Mac Intel, matriz maior de SOs/webcams,
+otimizações, novos formatos Linux e investigação mais ampla da rede da dependência.
+Os pacotes seguem experimentais e `distribution_ready=false`.
