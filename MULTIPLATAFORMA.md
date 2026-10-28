@@ -147,3 +147,12 @@ cópia. A receita corrige esse conflito e permite três compilações CMake para
 Prioridade da beta: Mac Apple Silicon e Linux x64/ARM64. Intel pode permanecer
 experimental separado. Otimizações adicionais e matrizes amplas de versões de
 SO ficam para acompanhamento; não bloqueiam pacotes aprovados de outros alvos.
+
+Para a beta de testes, a amostra de rede é informativa: falhas ou atividade
+observada continuam registradas e `dependency_network_verified=false` permanece.
+Ela não impede gerar um rascunho experimental, sem certificação de operação
+offline. Não capturamos payload nem tráfego do computador pessoal. O diagnóstico
+adicional classifica conexões locais/externas e portas, sem publicar endereços.
+Testes de execução, hashes, barreiras de arquivos privados e licenças exigidas
+continuam bloqueando um pacote inválido. A versão final continua dependendo da
+revisão das pendências; o proprietário revisa o rascunho antes de qualquer publicação.

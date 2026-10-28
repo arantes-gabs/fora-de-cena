@@ -91,6 +91,9 @@ def draft(create=False):
                     'Commit: `'+commit+'`.\n\n'
                     'Pacotes experimentais, `distribution_ready=false`. Validar câmera, '
                     'gestos, OBS/saída virtual, chamadas, licenças e rede antes de publicar.\n\n'
+                    'Imagens são processadas localmente. O fornecedor MediaPipe declara métricas '
+                    'de uso/desempenho; a verificação de rede dessa dependência segue pendente. '
+                    'O aplicativo não implementa telemetria própria. Consulte PRIVACY.md.\n\n'
                     'Os fontes correspondentes da saída e as licenças são específicos de cada plataforma. '
                     'Confira o arquivo SHA256SUMS da plataforma escolhida.\n')})
     record=json.loads(raw)

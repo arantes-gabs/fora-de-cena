@@ -54,7 +54,7 @@ os insumos; não substitui a revisão das dependências transitivas compiladas.
 
 ## Executar na branch de testes do GitHub
 
-Pushes autorizados na branch `testing/mac-linux` disparam a tentativa Intel. A compilação pode demorar e consumir bastante memória/disco do runner gratuito. Quando o workflow também estiver na branch padrão, a execução manual terá a opção `build_macos_intel`, desligada por padrão.
+Pushes autorizados em `testing/mac-linux` sondam compatibilidade Intel. A compilação Intel é opcional, pela opção manual `build_macos_intel`, desligada por padrão quando o workflow estiver na branch principal. A tentativa já iniciada pode terminar independentemente dos pacotes Mac ARM64/Linux. Não deve bloquear a entrega deles.
 
 Acompanhe o job Intel: compilação C API → instalação da wheel explícita e
    lock → testes Python/JS → inferência sintética → DMG → autoteste do executável.

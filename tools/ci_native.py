@@ -110,6 +110,11 @@ def summarize(target: str) -> None:
         diagnostic = ROOT / 'work/intel-source-self-test.json'
         if diagnostic.is_file() and json.loads(diagnostic.read_text(encoding='utf-8')).get('ok'):
             state += ' Custom Intel source inference/self-test passed; inspect the separate DMG/frozen test outcome.'
+    network=ROOT/'work/dependency-network-sample.json'
+    if network.is_file():
+        observed=json.loads(network.read_text(encoding='utf-8')).get('sample_network_syscalls_observed')
+        state += (' Network sample observed calls requiring review.' if observed else ' No network syscalls observed in this bounded sample.')
+        state += ' Dependency network verification is still pending; no offline certification.'
     text = (f'### {target}\n\n{state}\n\n'
             'See job/step results for test and build outcomes. No webcam or call tested. '
             '`distribution_ready=false`. No Release or stored binary artifact.\n')

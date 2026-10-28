@@ -20,16 +20,12 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: native-manual-${{ github.ref }}
-  cancel-in-progress: false
-
 env:
   PYTHONUTF8: '1'
   PIP_DISABLE_PIP_VERSION_CHECK: '1'
   MPLBACKEND: Agg
   BUILD_CANDIDATES: ${{ github.event_name == 'push' || inputs.build_candidates }}
-  BUILD_INTEL: ${{ github.event_name == 'push' || inputs.build_macos_intel }}
+  BUILD_INTEL: ${{ github.event_name == 'workflow_dispatch' && inputs.build_macos_intel }}
 
 jobs:
   native:
@@ -52,6 +48,9 @@ jobs:
             target: linux-arm64
             architecture: arm64
     runs-on: ${{ matrix.runner }}
+    concurrency:
+      group: native-validation-${{ github.ref }}-${{ matrix.target }}
+      cancel-in-progress: true
     timeout-minutes: 90
     defaults:
       run:
@@ -103,6 +102,7 @@ jobs:
           python tools/ci_native.py diagnose --target ${{ matrix.target }}
       - name: Synthetic Linux network syscall sample (counts only, no packet capture)
         if: runner.os == 'Linux'
+        continue-on-error: true # Review finding stays pending; never certifies offline operation.
         run: python tools/check_dependency_network.py
       - name: Compile and self-test experimental candidate on native runner
         if: env.BUILD_CANDIDATES == 'true'
@@ -117,6 +117,9 @@ jobs:
     if: github.event.repository.private == false && (github.ref == 'refs/heads/testing/mac-linux' || github.ref == 'refs/heads/main')
     name: macos-x86_64 - probe and optional experimental source build
     runs-on: macos-15-intel
+    concurrency:
+      group: intel-validation-${{ github.ref }}
+      cancel-in-progress: false
     timeout-minutes: 120
     defaults:
       run:

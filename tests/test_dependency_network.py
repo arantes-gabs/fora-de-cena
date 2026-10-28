@@ -2,10 +2,19 @@ import os
 import unittest
 from unittest.mock import patch
 
-from tools.check_dependency_network import audit, parse_counts, trace
+from tools.check_dependency_network import audit, parse_counts, trace, connection_summary
 
 
 class DependencyNetworkTests(unittest.TestCase):
+    def test_connection_metadata_distinguishes_local_and_external_without_preserving_addresses(self):
+        summary=connection_summary('12 connect(3, {sa_family=AF_UNIX, sun_path="/fixture/socket"}, 16) = -1\n'
+            '12 connect(3, {sa_family=AF_INET, sin_port=htons(443), sin_addr=inet_addr("192.0.2.10")}, 16) = -1\n'
+            '12 connect(3, {sa_family=AF_INET, sin_port=htons(9), sin_addr=inet_addr("127.0.0.1")}, 16) = -1\n')
+        self.assertEqual(summary['external_ports'],{'443':1})
+        self.assertEqual(summary['unix'],1)
+        self.assertEqual(summary['loopback'],1)
+        self.assertNotIn('192.0.2.10',str(summary))
+        self.assertNotIn('/fixture/socket',str(summary))
     def test_summary_counts_successful_and_failed_calls_without_payload(self):
         summary = ('% time seconds usecs/call calls errors syscall\n'
                    '------ ----------- ----------- --------- --------- ----------------\n'

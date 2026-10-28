@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import ipaddress
 import os
 from pathlib import Path
 import re
@@ -36,9 +37,36 @@ def parse_counts(summary: str) -> dict[str, int]:
     return counts
 
 
-def trace(mode: str, folder: Path, tracer: str) -> dict[str, int]:
-    summary = folder / (mode + '.counts')
-    home = folder / (mode + '-home')
+def connection_summary(text: str) -> dict[str, object]:
+    result={'unix':0,'kernel_netlink':0,'loopback':0,'external':0,'undecoded':0,'external_ports':{}}
+    for line in text.splitlines():
+        if not re.search(r'\bconnect\(',line):
+            continue
+        if 'AF_UNIX' in line or 'AF_LOCAL' in line:
+            result['unix']+=1
+        elif 'AF_NETLINK' in line:
+            result['kernel_netlink']+=1
+        else:
+            ipv4=re.search(r'inet_addr\("([0-9.]+)"\)',line)
+            ipv6=re.search(r'inet_pton\(AF_INET6, "([0-9a-fA-F:]+)"',line)
+            address=ipv4 or ipv6
+            if not address:
+                result['undecoded']+=1
+                continue
+            if ipaddress.ip_address(address.group(1)).is_loopback:
+                result['loopback']+=1
+            else:
+                result['external']+=1
+                port=re.search(r'sin6?_port=htons\((\d+)\)',line)
+                label=port.group(1) if port else 'unknown'
+                result['external_ports'][label]=result['external_ports'].get(label,0)+1
+    return result
+
+
+def trace(mode: str, folder: Path, tracer: str, connections=False):
+    suffix='connections' if connections else 'counts'
+    summary = folder / (mode + '.'+suffix)
+    home = folder / (mode + '-'+suffix+'-home')
     home.mkdir()
     # No GitHub credentials, proxy settings or personal profile/config are inherited.
     environment = {'PATH': os.environ.get('PATH', '/usr/bin:/bin'), 'HOME': str(home),
@@ -50,11 +78,16 @@ def trace(mode: str, folder: Path, tracer: str) -> dict[str, int]:
                    'LD_LIBRARY_PATH': str(Path(sys.base_prefix) / 'lib')}
     command = [tracer, '-f', '-qq', '-c', '-e', 'trace=%network', '-o', str(summary),
                sys.executable, str(Path(__file__).resolve()), '--workload', mode]
+    if connections:
+        # Addresses only, never send/receive buffers or packet payloads.
+        command=[tracer,'-f','-qq','-e','trace=connect','-o',str(summary),
+                 sys.executable,str(Path(__file__).resolve()),'--workload',mode]
     result = subprocess.run(command, cwd=ROOT, env=environment, timeout=180,
                             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     if result.returncode or not summary.is_file():
         raise RuntimeError('Traced workload failed; no network conclusion is available.')
-    return parse_counts(summary.read_text(encoding='utf-8'))
+    text=summary.read_text(encoding='utf-8')
+    return connection_summary(text) if connections else parse_counts(text)
 
 
 def workload(mode: str) -> None:
@@ -94,6 +127,7 @@ def audit() -> int:
         if canary.get('socket', 0) < 1 or canary.get('connect', 0) < 1:
             raise RuntimeError('Network tracing canary failed; no conclusion is available.')
         counts = trace('synthetic', folder, tracer)
+        connections=trace('synthetic',folder,tracer,connections=True) if any(counts.values()) else None
         try:
             audio_counts = trace('audio-control', folder, tracer)
         except RuntimeError:
@@ -102,6 +136,7 @@ def audit() -> int:
               'camera_opened': False, 'packet_payload_captured': False,
               'canary_verified': True, 'network_syscall_counts': counts,
               'optional_audio_control_counts': audio_counts,
+              'connection_categories': connections,
               'sample_network_syscalls_observed': any(counts.values()),
               'dependency_network_verified': False, 'distribution_ready': False}
     (work / 'dependency-network-sample.json').write_text(json.dumps(report, indent=2), encoding='utf-8')
