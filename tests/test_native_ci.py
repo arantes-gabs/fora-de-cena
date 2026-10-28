@@ -12,11 +12,18 @@ from unittest.mock import patch
 
 from packaging.utils import parse_wheel_filename
 from tools.check_platform_wheels import supported_tags, target_environment
-from tools.ci_native import build, summarize
+from tools.ci_native import build, summarize, public_error
 from tools.prepare_minimal_opencv import extract_verified
 
 
 class NativeCITests(unittest.TestCase):
+    def test_ci_failure_messages_hide_home_paths_and_credential_values(self):
+        with patch('tools.ci_native.Path.home', return_value=Path('/fixture-home')):
+            text = public_error('/fixture-home/private/library.so; password=fixture-value token=fixture-token github_pat_example')
+        for value in ('/fixture-home', 'fixture-value', 'fixture-token', 'github_pat_example'):
+            self.assertNotIn(value, text)
+        self.assertIn('library.so', text)
+
     def test_windows_ci_builds_both_portable_and_installer_without_installing_tools(self):
         with patch.object(sys, 'platform', 'win32'), patch.object(sys, 'version', '3.14.7 (fixture)'), \
                 patch('tools.ci_native.shutil.which', return_value='ISCC.exe'), \

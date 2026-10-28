@@ -13,8 +13,27 @@ import sys
 import urllib.request
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+from tools.build_diagnostics import public_error
 PYTHON_VERSION = '3.14.7'
 PYTHON_LICENSE_SHA256 = 'b0e25a78cffb43f4d92de8b61ccfa1f1f98ecbc22330b54b5251e7b6ba010231'
+
+
+def diagnose(target: str | None) -> int:
+    from teleport_cam.launcher import self_test
+    try:
+        report = self_test()
+    except Exception as error:
+        report = {'ok': False, 'error': type(error).__name__, 'detail': public_error(str(error))}
+    name = 'intel-source-self-test.json' if target == 'macos-x86_64' else 'source-self-test.json'
+    path = ROOT / 'work' / name
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(report, indent=2), encoding='utf-8')
+    if not report['ok']:
+        print('Source diagnostic failed:', report.get('error'), report.get('detail'))
+        return 1
+    print('Source diagnostic passed. No camera opened; dependency network verification remains pending.')
+    return 0
 
 
 def build() -> None:
@@ -87,10 +106,12 @@ def summarize(target: str) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('action', choices=('build', 'summary'))
+    parser.add_argument('action', choices=('build', 'summary', 'diagnose'))
     parser.add_argument('--target')
     args = parser.parse_args()
-    if args.action == 'build':
+    if args.action == 'diagnose':
+        raise SystemExit(diagnose(args.target))
+    elif args.action == 'build':
         build()
     else:
         summarize(args.target)

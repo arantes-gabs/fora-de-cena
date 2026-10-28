@@ -20,15 +20,18 @@
  
  OPENCV_SO_VERSION = "3.4"
  
-@@ -173,6 +172,7 @@
+@@ -173,6 +172,10 @@
      # here are serving to provide some CMake script configuration options
      cache_entries = {
          "CMAKE_BUILD_TYPE": "Release",
++        "BUILD_ZLIB": "OFF",
++        "ZLIB_LIBRARY": "__FDC_MACOS_SDKROOT__/usr/lib/libz.tbd",
++        "ZLIB_INCLUDE_DIR": "__FDC_MACOS_SDKROOT__/usr/include",
 +        "CMAKE_CXX_LINK_EXECUTABLE": "<CMAKE_CXX_COMPILER> <FLAGS> <CMAKE_CXX_LINK_FLAGS> <LINK_FLAGS> <OBJECTS> -o <TARGET> <LINK_LIBRARIES>",
          # The module list is always sorted alphabetically so that we do not
          # cause a rebuild when changing the link order.
          "BUILD_LIST": ",".join(sorted(OPENCV_MODULES)),
-@@ -182,14 +182,26 @@
+@@ -182,14 +185,26 @@
          "BUILD_SHARED_LIBS": "ON" if OPENCV_SHARED_LIBS else "OFF",
          "WITH_ITT": "OFF",
          "WITH_JASPER": "OFF",
@@ -59,7 +62,7 @@
          "WITH_PTHREADS": "ON",
          "WITH_PTHREADS_PF": "ON",
          # When building tests, by default Bazel builds them in dynamic mode.
-@@ -215,34 +227,8 @@
+@@ -215,34 +230,8 @@
          "ENABLE_CCACHE": "OFF",
      },
      lib_source = "@opencv//:all",

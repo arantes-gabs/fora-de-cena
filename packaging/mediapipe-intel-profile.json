@@ -22,7 +22,8 @@
   "native_member": "mediapipe/tasks/c/libmediapipe.dylib",
   "wheel_filename": "mediapipe-1.1.1-1fdcintel-py3-none-macosx_15_0_x86_64.whl",
   "rationale": "Build the current C API directly for Intel. Keep the official Python files and notices, replace the entire native library, regenerate wheel tags and RECORD. Never relabel an ARM binary as Intel or downgrade runtime pins. Native compilation and integration tests are pending.",
-  "source_patch_sha256": "89d8ae0de58b5f1ed3a5394230ad392941c141da1e69d1d13b8c2c4281ab1d44",
+  "source_patch_sha256": "8461d6689478868e7edf34dd5251604476c3ff48c4df82d67747817a1ca1851d",
   "source_build_file_sha256": "6f5e8a91544bdd6214a3dce0dbc186aded0c805eee2f301e1fbff2211f818755",
-  "private_opencv": "Static core/imgproc/imgcodecs/video/features2d/flann/calib3d, external codecs/GUI disabled. Application cv2 remains the separately installed official wheel."
+  "private_opencv": "Static core/imgproc/imgcodecs/video/features2d/flann/calib3d, external codecs/GUI disabled. Application cv2 remains the separately installed official wheel.",
+  "system_zlib_from_macos_sdk": true
 }

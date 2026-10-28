@@ -41,7 +41,7 @@ Driver indisponível/permissão negada não deve travar a prévia. Reinício e a
 
 Etapas de desenvolvimento; não são exigidas de quem recebe o pacote pronto. Execute no sistema e chip de destino. Não existe compilação Windows → Mac/Linux nesta receita.
 
-Use Python 3.14 com suporte Tk. Em Linux, instale pelo gerenciador da distribuição as bibliotecas necessárias, como PortAudio, libGL e GLib, quando ausentes. Esses requisitos precisam ser conferidos no inventário do candidato. No Mac, use uma distribuição Python confiável com Tk; não substitua o Python do sistema.
+Use Python 3.14 com suporte Tk. Em Linux, instale pelo gerenciador da distribuição as bibliotecas necessárias, como PortAudio, libGL, libEGL, libGLES e GLib, quando ausentes. A biblioteca nativa MediaPipe exige EGL/GLES mesmo quando a inferência usa CPU. Esses requisitos precisam ser conferidos no inventário do candidato. No Mac, use uma distribuição Python confiável com Tk; não substitua o Python do sistema.
 
 ```sh
 python3.14 -m venv .venv

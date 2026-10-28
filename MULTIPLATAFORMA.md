@@ -6,13 +6,13 @@ anúncio de suporte nativo aprovado para Mac/Linux nem nova tag de versão.
 
 ## Matriz de validação
 
-| Alvo | Saída prevista | Estado antes do primeiro CI |
+| Alvo | Saída prevista | Estado após a segunda rodada |
 | --- | --- | --- |
-| Windows x64 | EXE portátil e instalador por usuário | Revalidar fontes novos e executáveis |
-| Mac Apple Silicon | APP dentro de DMG | Correções recebidas/testadas no M1; reproduzir build e autoteste no CI |
-| Mac Intel x86_64 | APP dentro de DMG | Compilação MediaPipe própria experimental; ainda sem build nativo confirmado |
-| Linux x86_64 | TAR.GZ com executável e recursos | Build, autoteste e teste físico pendentes |
-| Linux ARM64 | TAR.GZ com executável e recursos | Build, autoteste e teste físico pendentes |
+| Windows x64 | EXE portátil e instalador por usuário | Testes de fontes, EXE portátil, pacote em pasta e instalador passaram no CI; testes físicos da atualização pendentes |
+| Mac Apple Silicon | APP dentro de DMG | OpenCV enxuto e APP compilados; autoteste do pacote ainda em correção |
+| Mac Intel x86_64 | APP dentro de DMG | Receita avançou até OpenCV privado; correção para zlib do SDK em reteste |
+| Linux x86_64 | TAR.GZ com executável e recursos | Testes de fontes passaram; diagnóstico de inferência e build em correção; teste físico pendente |
+| Linux ARM64 | TAR.GZ com executável e recursos | Testes de fontes passaram; diagnóstico de inferência e build em correção; teste físico pendente |
 
 O estado será atualizado com resultados reais e links das execuções. Check verde
 de CI não certifica câmera, chamada ou desempenho em todos os computadores.
@@ -71,3 +71,14 @@ se exigir mais trabalho. `distribution_ready=false` permanece durante os testes.
 - Intel: a compilação avançou até o OpenCV privado. O teste de link C++ falhou por caminho relativo do wrapper Apple no CMake. A receita foi ajustada com base no código da versão fixada do rules_foreign_cc.
 
 Estas correções precisam passar por nova execução. Suporte nativo e distribuição continuam pendentes.
+
+## Segunda execução — Windows aprovado no CI
+
+[Segunda rodada](https://github.com/arantes-gabs/fora-de-cena/actions/runs/40587140243).
+
+- Windows x64: testes de fontes e compilação/verificação do EXE portátil, pacote em pasta e instalador concluídos com sucesso. Não houve upload dos pacotes ou alteração da Release existente.
+- Linux x64/ARM64: testes Python/JavaScript passaram; diagnóstico dos modelos interrompeu a etapa seguinte. A receita foi complementada com EGL/GLES, dependências diretas verificadas na biblioteca oficial MediaPipe, e mensagens de erro públicas sanitizadas.
+- Apple Silicon: OpenCV enxuto passou pela compilação e pela barreira de caminhos privados; o aplicativo foi compilado, mas seu autoteste ainda falhou. Foi corrigida a validação de links entre Frameworks e Resources dentro do mesmo APP, e os próximos erros serão mostrados sem caminhos de perfil.
+- Intel: o ajuste de linker permitiu avançar. O build parou na versão antiga de zlib embutida no OpenCV privado; a receita agora seleciona a zlib do SDK macOS, sem acrescentar bibliotecas ao computador do usuário. A compilação ainda precisa passar.
+
+A próxima rodada valida essas correções. Câmera/chamadas reais, revisão final de bibliotecas/licenças e verificação de rede permanecem pendentes. Nenhuma nova versão/tag foi criada.

@@ -34,6 +34,27 @@ class PackagedTkTests(unittest.TestCase):
             script.write_text('# Tk resource')
             self.assertEqual(verify_tk_data(root), 'framework-scripts')
 
+    def test_macos_resources_symlink_is_allowed_only_inside_the_application(self):
+        with tempfile.TemporaryDirectory() as folder:
+            contents = Path(folder) / 'Example.app/Contents'
+            root = contents / 'Frameworks'
+            resources = contents / 'Resources/_tk_data'
+            root.mkdir(parents=True)
+            resources.mkdir(parents=True)
+            (resources / 'tk.tcl').write_text('# bundled Tk resource')
+            try:
+                (root / '_tk_data').symlink_to(resources, target_is_directory=True)
+            except OSError:
+                self.skipTest('This Windows host restricts symlinks; native Unix CI covers the bundle layout.')
+            self.assertEqual(verify_tk_data(root), 'external-scripts')
+            (root / '_tk_data').unlink()
+            outside = Path(folder) / 'outside'
+            outside.mkdir()
+            (outside / 'tk.tcl').write_text('# outside bundle')
+            (root / '_tk_data').symlink_to(outside, target_is_directory=True)
+            with self.assertRaises(FileNotFoundError):
+                verify_tk_data(root)
+
     def test_missing_tk_scripts_or_an_unrelated_zip_are_rejected(self):
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)

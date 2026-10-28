@@ -20,6 +20,7 @@ from teleport_cam.platform_support import system_environment
 from setup_models import verify_model
 from tools.build_windows import collect_notices, digest
 from tools.distribution_licenses import package_compliance, runtime_signature, upstream_files
+from tools.build_diagnostics import public_error
 
 TARGETS = ('macos-arm64', 'macos-x86_64', 'linux-x86_64', 'linux-arm64')
 PRIVATE_NAMES = {'.git', '.venv', '.ssh', '.aws', '.env', '.meet_pairing_key',
@@ -103,7 +104,8 @@ def run_diagnostic(executable: Path, work: Path) -> dict[str, object]:
                                cwd=work, env=environment, timeout=180, check=False)
     report = json.loads(report_path.read_text(encoding='utf-8'))
     if completed.returncode or not report.get('ok') or not report.get('frozen') or report.get('camera_opened'):
-        raise RuntimeError('O autoteste nativo não passou; consulte o relatório local de build.')
+        detail = public_error(str(report.get('error', 'RuntimeError')) + ': ' + str(report.get('detail', 'invalid frozen test result')))
+        raise RuntimeError('O autoteste nativo não passou: ' + detail)
     return report
 
 

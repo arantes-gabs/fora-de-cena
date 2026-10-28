@@ -77,6 +77,20 @@ def main() -> None:
                    env=environment, check=True)
     subprocess.run(['/usr/bin/git', '-C', str(source), 'apply', str(patch_path)],
                    env=environment, check=True)
+    sdk = Path(subprocess.check_output(['/usr/bin/xcrun', '--show-sdk-path'],
+                                      text=True, env=environment).strip()).resolve(strict=True)
+    sdk_version = subprocess.check_output(['/usr/bin/xcrun', '--show-sdk-version'],
+                                          text=True, env=environment).strip()
+    if not (sdk / 'usr/lib/libz.tbd').is_file() or not (sdk / 'usr/include/zlib.h').is_file():
+        raise ValueError('The selected macOS SDK must provide system zlib headers and linker stub.')
+    build_file = source / 'third_party/BUILD'
+    configured = build_file.read_text(encoding='utf-8')
+    for suffix in ('usr/lib/libz.tbd', 'usr/include'):
+        placeholder = json.dumps('__FDC_MACOS_SDKROOT__/' + suffix)
+        if configured.count(placeholder) != 1:
+            raise ValueError('Unexpected SDK substitution in the reviewed source patch')
+        configured = configured.replace(placeholder, json.dumps(str(sdk / suffix)))
+    build_file.write_text(configured, encoding='utf-8')
     # Compile the C API directly; setup.py forces ARM. The reviewed source patch
     # keeps its private OpenCV static and omits external codecs/GUI dependencies.
     command = [str(bazel), '--batch', '--nosystem_rc', '--nohome_rc',
@@ -99,6 +113,7 @@ def main() -> None:
               'architecture': 'x86_64', 'profile_sha256': digest(PROFILE),
               'source_commit': head, 'python_template_sha256': digest(template),
               'source_patch_sha256': digest(patch_path),
+              'macos_sdk_version': sdk_version, 'system_zlib_from_sdk': True,
               'bazel_sha256': digest(bazel), 'native_sha256': digest(native),
               'build_driver_sha256': digest(Path(__file__)),
               'wheel': {'filename': wheel.name, 'sha256': digest(wheel)},

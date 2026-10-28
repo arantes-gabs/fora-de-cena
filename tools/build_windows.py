@@ -20,6 +20,7 @@ from teleport_cam import __version__
 from teleport_cam.model_assets import MODEL_ASSETS
 from setup_models import verify_model
 from tools.distribution_licenses import prepare_model_notices, package_compliance, upstream_files, runtime_signature
+from tools.build_diagnostics import public_error
 
 PRIVATE_NAMES = {'.meet_pairing_key', 'user_settings.json', '.env', 'startup-error.log'}
 
@@ -119,7 +120,7 @@ def run_diagnostic(executable: Path, cwd: Path, report_path: Path, temp_root: Pa
                             creationflags=subprocess.CREATE_NO_WINDOW)
     report = json.loads(report_path.read_text(encoding='utf-8'))
     if result.returncode or not report.get('ok') or not report.get('frozen') or report.get('camera_opened'):
-        raise RuntimeError(f'O diagnóstico do executável não passou: {report}')
+        raise RuntimeError('O diagnóstico do executável não passou: ' + public_error(str(report)))
 
 
 def verify_portable(archive_path: Path, work: Path) -> None:
