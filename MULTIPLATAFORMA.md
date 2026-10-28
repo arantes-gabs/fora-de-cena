@@ -6,13 +6,13 @@ anúncio de suporte nativo aprovado para Mac/Linux nem nova tag de versão.
 
 ## Matriz de validação
 
-| Alvo | Saída prevista | Estado após a segunda rodada |
+| Alvo | Saída prevista | Estado após a terceira rodada (Intel ainda em execução) |
 | --- | --- | --- |
 | Windows x64 | EXE portátil e instalador por usuário | Testes de fontes, EXE portátil, pacote em pasta e instalador passaram no CI; testes físicos da atualização pendentes |
-| Mac Apple Silicon | APP dentro de DMG | OpenCV enxuto e APP compilados; autoteste do pacote ainda em correção |
-| Mac Intel x86_64 | APP dentro de DMG | Receita avançou até OpenCV privado; correção para zlib do SDK em reteste |
-| Linux x86_64 | TAR.GZ com executável e recursos | Testes de fontes passaram; diagnóstico de inferência e build em correção; teste físico pendente |
-| Linux ARM64 | TAR.GZ com executável e recursos | Testes de fontes passaram; diagnóstico de inferência e build em correção; teste físico pendente |
+| Mac Apple Silicon | APP dentro de DMG | OpenCV enxuto, testes de fontes, inferência, DMG e autoteste do APP passaram; teste físico desta compilação pendente |
+| Mac Intel x86_64 | APP dentro de DMG | Compilação experimental do MediaPipe em execução; sem suporte confirmado |
+| Linux x86_64 | TAR.GZ com executável e recursos | Testes de fontes, inferência, pacote e autoteste do executável passaram; teste físico pendente |
+| Linux ARM64 | TAR.GZ com executável e recursos | Testes de fontes, inferência, pacote e autoteste do executável passaram; teste físico pendente |
 
 O estado será atualizado com resultados reais e links das execuções. Check verde
 de CI não certifica câmera, chamada ou desempenho em todos os computadores.
@@ -82,3 +82,29 @@ Estas correções precisam passar por nova execução. Suporte nativo e distribu
 - Intel: o ajuste de linker permitiu avançar. O build parou na versão antiga de zlib embutida no OpenCV privado; a receita agora seleciona a zlib do SDK macOS, sem acrescentar bibliotecas ao computador do usuário. A compilação ainda precisa passar.
 
 A próxima rodada valida essas correções. Câmera/chamadas reais, revisão final de bibliotecas/licenças e verificação de rede permanecem pendentes. Nenhuma nova versão/tag foi criada.
+
+## Terceira execução — quatro alvos passaram
+
+[Terceira rodada](https://github.com/arantes-gabs/fora-de-cena/actions/runs/40608553144), commit `539da3d`.
+
+- Windows x64: testes e verificação dos formatos portátil, pasta e instalador passaram novamente.
+- Apple Silicon: OpenCV próprio, testes, inferência e compilação/autoteste do DMG passaram. A correção de recursos Tk foi validada no APP real do runner.
+- Linux x64 e ARM64: testes, inferência e compilação/autoteste dos executáveis passaram após a inclusão de EGL/GLES no runner.
+- Intel: a compilação C++ continua em execução. Nenhum resultado dos demais alvos deve ser interpretado como aprovação Intel.
+
+Todos os pacotes continuaram restritos às máquinas temporárias de CI. Nenhuma tag, Release ou download existente foi substituído.
+
+## Amostra de rede — Linux, ainda não validada
+
+`tools/check_dependency_network.py` prepara uma observação limitada com `strace`
+no runner Linux limpo. O controle positivo faz uma tentativa local sem payload;
+o teste seguinte acompanha o diagnóstico sintético, processos filhos, cinco
+segundos de espera e encerramento. O ambiente filho não herda tokens, proxies
+ou configurações pessoais. Somente contagens de syscalls são registradas, sem
+endereços, conteúdo de pacotes ou captura de tráfego do computador do mantenedor.
+
+Atividade observada exige investigação, sem ser automaticamente chamada de
+telemetria. Mesmo uma amostra sem chamadas de rede não comprova ausência de
+atividade futura, em sessões longas, no APP empacotado ou em outros sistemas.
+`dependency_network_verified=false` e `distribution_ready=false` permanecem.
+O aviso oficial do fornecedor continua aplicável: [privacidade MediaPipe](https://developers.google.com/edge/mediapipe/solutions/tasks#mediapipe_tasks_privacy_notice).

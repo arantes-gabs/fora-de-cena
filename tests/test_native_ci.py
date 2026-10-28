@@ -24,6 +24,21 @@ class NativeCITests(unittest.TestCase):
             self.assertNotIn(value, text)
         self.assertIn('library.so', text)
 
+    def test_failure_messages_hide_complete_authorization_headers_and_quoted_values(self):
+        for value in ('Authorization: Bearer fixture-bearer-value',
+                      'authorization=Basic fixture-basic-value',
+                      'password="fixture password with spaces"'):
+            with self.subTest(value=value):
+                text = public_error('Build failed\n' + value + '\nMissing native library')
+                self.assertNotIn('fixture', text)
+                self.assertIn('[redacted]', text)
+                self.assertIn('Missing native library', text)
+
+    def test_failure_messages_are_bounded_after_redaction(self):
+        text = public_error('Authorization: Bearer ' + 'fixture-value ' * 1000 + '\n' + 'x' * 2000)
+        self.assertNotIn('fixture-value', text)
+        self.assertLessEqual(len(text), 1600)
+
     def test_windows_ci_builds_both_portable_and_installer_without_installing_tools(self):
         with patch.object(sys, 'platform', 'win32'), patch.object(sys, 'version', '3.14.7 (fixture)'), \
                 patch('tools.ci_native.shutil.which', return_value='ISCC.exe'), \

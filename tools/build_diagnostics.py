@@ -12,5 +12,8 @@ def public_error(detail: str) -> str:
                          key=len, reverse=True):
         detail = detail.replace(prefix, '[build-path]')
     detail = re.sub(r'(?:github_pat_|gh[pousr]_)[A-Za-z0-9_]+', '[redacted]', detail)
-    detail = re.sub(r'(?i)\b(password|secret|token|authorization)\s*[:=]\s*\S+', r'\1=[redacted]', detail)
+    # Values may contain spaces (Bearer/Basic headers and quoted passwords).
+    # Discard the remainder of that line instead of exposing a partial secret.
+    detail = re.sub(r'(?im)\b(password|secret|token|authorization)\s*[:=][^\r\n]*',
+                    r'\1=[redacted]', detail)
     return detail[:1600]

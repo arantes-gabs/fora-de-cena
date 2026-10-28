@@ -1,8 +1,9 @@
 # Mac Intel — receita experimental, sem download liberado
 
 O aplicativo tem uma tentativa de compilação para macOS Intel x86_64, mantendo
-Python 3.14, MediaPipe 1.1.1 e as versões atuais do aplicativo. **A receita ainda
-precisa passar pela compilação e testes em um Mac Intel. Não é suporte confirmado.**
+Python 3.14, MediaPipe 1.1.1 e as versões atuais do aplicativo. **A compilação
+está sendo tentada no runner Intel; ainda não foi concluída com todos os testes.
+Não é suporte confirmado.** O acompanhamento fica em [MULTIPLATAFORMA.md](MULTIPLATAFORMA.md).
 Nenhum pacote Intel foi publicado. `distribution_ready=false` permanece.
 
 Para inspecionar os insumos no Windows, sem baixar ou compilar, execute
