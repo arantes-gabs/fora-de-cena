@@ -19,6 +19,7 @@ from teleport_cam.paths import data_file, data_root
 from teleport_cam.platform_support import output_choices, open_local_path, system_environment
 from teleport_cam.virtual_output import VirtualOutput, output_command, output_environment
 from tools.build_unix import build, build_plan, checked_directory, create_tarball, inventory, native_target
+from tools.build_unix import check_native_license_scope
 from tools.check_platform_wheels import check, supported_tags
 from packaging.requirements import Requirement
 from packaging.utils import parse_wheel_filename
@@ -256,6 +257,12 @@ class NativePackageTests(unittest.TestCase):
                     with self.assertRaises(ValueError):
                         inventory(payload)
                     path.unlink()
+
+    def test_unused_codec_gui_and_fortran_binaries_block_instead_of_being_deleted(self):
+        for name in ('libavcodec.so.62', 'libQt5Core.so.5', 'libquadmath-abc.so.0', 'libreadline.so.8'):
+            with self.subTest(name=name), self.assertRaisesRegex(ValueError,'reviewed candidate profile'):
+                check_native_license_scope([Path(name)])
+        check_native_license_scope([Path('cv2.abi3.so'),Path('libmediapipe.dylib'),Path('libstdc++.so.6')])
 
     def test_symlinks_must_stay_inside_the_bundle_and_survive_tar_archiving(self):
         with tempfile.TemporaryDirectory() as folder:

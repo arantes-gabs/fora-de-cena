@@ -25,6 +25,16 @@ from tools.build_diagnostics import public_error
 TARGETS = ('macos-arm64', 'macos-x86_64', 'linux-x86_64', 'linux-arm64')
 PRIVATE_NAMES = {'.git', '.venv', '.ssh', '.aws', '.env', '.meet_pairing_key',
                  'user_settings.json', 'startup-error.log', '__pycache__'}
+UNREVIEWED_NATIVE_PREFIXES = ('libavcodec', 'libavformat', 'libavutil', 'libswscale',
+    'libswresample', 'libx264', 'libx265', 'libqt', 'libglib', 'libgobject', 'libgio',
+    'libreadline', 'libquadmath', 'libgfortran', 'libscipy_openblas', 'libopenblas')
+
+
+def check_native_license_scope(paths):
+    """Reject unused/unreviewed codec, GUI and Fortran libraries; don't delete them."""
+    for path in paths:
+        if path.name.lower().startswith(UNREVIEWED_NATIVE_PREFIXES):
+            raise ValueError('Native library outside the reviewed candidate profile: '+path.name)
 
 
 def native_target(system: str | None = None, machine: str | None = None) -> str:
@@ -145,6 +155,13 @@ def build(python_license: Path | None = None, opencv_wheel: Path | None = None,
     work = Path(tempfile.mkdtemp(prefix=target + '-', dir=work_base))
     build_root = Path(tempfile.mkdtemp(prefix=target + '-', dir=build_base))
     versions = collect_notices(work / 'notices', python_license)
+    if sys.platform=='linux':
+        from tools.build_minimal_numpy import validate_artifact
+        wheels=list((ROOT/'work/numpy-minimal/wheels').glob('*.whl'))
+        if len(wheels)!=1:
+            raise ValueError('Linux candidates require the explicit no-BLAS NumPy wheel/provenance.')
+        numpy_build=validate_artifact(wheels[0],ROOT/'work/numpy-minimal/provenance.json')
+        (work/'notices/NUMPY-CUSTOM-BUILD.json').write_text(json.dumps(numpy_build,indent=2),encoding='utf-8')
     if mediapipe_build is not None:
         (work / 'notices' / 'MEDIAPIPE-INTEL-CUSTOM-BUILD.json').write_text(
             json.dumps(mediapipe_build, indent=2), encoding='utf-8')
@@ -187,9 +204,11 @@ def build(python_license: Path | None = None, opencv_wheel: Path | None = None,
     manifest = json.loads((work / 'bundle-build.json').read_text(encoding='utf-8'))
     payload = build_root / 'application' / ('Fora de Cena.app' if sys.platform == 'darwin' else 'ForaDeCena')
     files = inventory(payload)
+    check_native_license_scope(files)
     native_libraries = [{'path': path.relative_to(payload).as_posix(), 'sha256': digest(path)}
                         for path in files if path.suffix in ('.so', '.dylib') or '.so.' in path.name]
     (work / 'native-libraries.json').write_text(json.dumps(native_libraries, indent=2), encoding='utf-8')
+    print('Candidate native library basenames:', json.dumps(sorted({Path(row['path']).name for row in native_libraries})))
     executable = payload / 'Contents' / 'MacOS' / 'ForaDeCena' if sys.platform == 'darwin' else payload / 'ForaDeCena'
     if sys.platform == 'darwin':
         from tools.macos_bundle import audit_bundle

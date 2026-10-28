@@ -56,6 +56,13 @@ python main.py --self-test --report work/source-self-test.json
 python tools/build_unix.py
 ```
 
+**Pacote Linux da candidata 0.5.0-beta.1:** use o workflow para reproduzir o
+empacotamento completo. Ele compila OpenCV e NumPy enxutos antes de instalar
+os locks e valida os hashes dos artefatos selecionados. O comando de build
+Linux recusa o NumPy oficial neste perfil de distribuição; executar o app
+diretamente dos fontes continua usando o lock normal. A receita NumPy roda
+somente no runner limpo, sem aproveitar configurações do computador pessoal.
+
 O lock usa marcadores para dependências específicas de Mac/Windows. Instalar com `--only-binary` interrompe quando faltar um pacote compatível; não compila uma versão desconhecida silenciosamente. As dependências transitivas ainda precisam de validação nativa.
 
 Se a distribuição Python não incluir `LICENSE.txt` no local esperado, informe a licença correspondente com `--python-license /caminho/para/licenca-do-python`. Não selecione arquivos pessoais. O build falha se os modelos, fontes fixados ou avisos exigidos estiverem ausentes.
@@ -101,7 +108,7 @@ O M1 disponível permite iniciar o teste Mac. Linux e Intel precisam de testador
 Na branch pública `testing/mac-linux`, cada push autorizado executa testes e tentativas de compilação nos runners nativos. O workflow também prevê execução manual quando estiver disponível na branch padrão do GitHub:
 
 - **Opção de build desligada (padrão):** verifica dependências, instala o lock, executa testes Python/JavaScript e diagnóstico sem câmera nos runners Windows x64, Mac Apple Silicon, Linux x86_64 e Linux ARM64.
-- **Opção de build ligada:** também compila candidatos e executa seus autotestes nativos. No Mac, recompila o OpenCV enxuto em ambiente separado e verifica sua proveniência antes do empacotamento. Pode levar bem mais tempo que os testes.
+- **Opção de build ligada:** também compila candidatos e executa seus autotestes nativos. Mac ARM64 e Linux recompilam OpenCV enxuto em ambiente separado; Linux também compila NumPy sem BLAS externo. As proveniências são verificadas antes do empacotamento. Pode levar bem mais tempo que os testes.
 - **Mac Intel:** o job padrão sonda compatibilidade e sinaliza **BLOCKED** pela ausência de wheel oficial. A opção independente **build_macos_intel**, desligada por padrão, tenta compilar o MediaPipe 1.1.1 para x86_64, instalar a wheel própria, executar testes/inferência e gerar um DMG com autoteste. A receita ainda não foi executada em um Mac Intel; não é suporte confirmado. Veja [MAC_INTEL.md](MAC_INTEL.md).
 
 Só usa runners padrão gratuitos de repositórios públicos. A execução é recusada se o repositório estiver privado ou fora de `main`/`testing/mac-linux`. Push só dispara na branch de testes; não roda em PR, push na main ou agendamento. Quem apenas visita o repositório não ganha permissão para disparar workflows nele.

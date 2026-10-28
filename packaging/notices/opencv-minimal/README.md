@@ -1,4 +1,4 @@
-# OpenCV próprio: revisão do candidato macOS ARM64
+# OpenCV próprio: revisão Mac ARM64 e receita Linux
 
 Este software é baseado em parte no trabalho do Independent JPEG Group.
 This software is based in part on the work of the Independent JPEG Group.
@@ -28,3 +28,8 @@ Esta revisão é do recorte OpenCV; não encerra a revisão do aplicativo comple
 O auxiliar independente PyVirtualCam permanece GPL-2.0-only e acompanha fontes
 correspondentes em artefato separado. MediaPipe/rede, demais bibliotecas e testes
 físicos deste candidato continuam pendentes. distribution_ready=false.
+
+Extensão Linux da candidata 0.5.0-beta.1: mesmos fontes verificados, codecs
+JPEG/PNG/zlib estáticos e V4L2. KleidiCV e IPP são desligados nesse perfil;
+Carotene pode ser usado no ARM64, com o aviso BSD já preservado. A compilação,
+o inventário e os autotestes precisam confirmar essa seleção antes de liberação.

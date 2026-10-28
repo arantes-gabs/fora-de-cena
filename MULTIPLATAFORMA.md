@@ -108,3 +108,24 @@ telemetria. Mesmo uma amostra sem chamadas de rede não comprova ausência de
 atividade futura, em sessões longas, no APP empacotado ou em outros sistemas.
 `dependency_network_verified=false` e `distribution_ready=false` permanecem.
 O aviso oficial do fornecedor continua aplicável: [privacidade MediaPipe](https://developers.google.com/edge/mediapipe/solutions/tasks#mediapipe_tasks_privacy_notice).
+
+## Próxima candidata — 0.5.0-beta.1
+
+A versão de desenvolvimento foi separada da 0.4.0 para identificar corretamente
+os próximos pacotes e hashes. Isso não cria nem move uma tag ou Release.
+
+Após revisar as wheels efetivas, a receita Linux passa a compilar OpenCV com
+V4L2/JPEG, sem FFmpeg/Qt, e NumPy 2.5.4 sem BLAS/Fortran externos. São mudanças
+de empacotamento ainda sujeitas a teste nativo. Não removemos bibliotecas de
+uma wheel pronta nem trocamos as versões de execução por versões antigas.
+
+A wheel OpenCV Intel oficial 4.14.0.94 foi inspecionada separadamente: seu
+registro de build informa FFmpeg/GStreamer desligados e não contém os codecs
+GPL encontrados anteriormente na wheel ARM64. Não se presume que os pacotes
+de todos os chips tragam as mesmas bibliotecas.
+
+A tentativa Intel monolítica da terceira rodada foi substituída pela biblioteca
+oficial do domínio de visão (`mediapipe_tasks_vision_lib`), suficiente para as
+APIs usadas pelo app. Ela evita áudio/texto/busca e aplica o controle de símbolos
+do próprio fornecedor. A compilação antiga será cancelada para testar os insumos
+atuais; isso não constitui aprovação nem reprovação do novo candidato Intel.

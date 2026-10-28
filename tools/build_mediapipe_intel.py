@@ -71,7 +71,8 @@ def main() -> None:
         raise ValueError('MediaPipe checkout is not clean')
     patch_path = ROOT / 'packaging/mediapipe-intel-source.patch'
     if (digest(patch_path) != profile['source_patch_sha256'] or
-            digest(source / 'third_party/BUILD') != profile['source_build_file_sha256']):
+            digest(source / 'third_party/BUILD') != profile['source_build_file_sha256'] or
+            digest(source / 'WORKSPACE') != profile['source_workspace_sha256']):
         raise ValueError('Intel source patch or upstream OpenCV rule differs from reviewed inputs')
     subprocess.run(['/usr/bin/git', '-C', str(source), 'apply', '--check', str(patch_path)],
                    env=environment, check=True)
@@ -106,7 +107,7 @@ def main() -> None:
                profile['build_target']]
     subprocess.run(command, cwd=source, env=environment, check=True, timeout=90 * 60)
     native = work / 'libmediapipe.dylib'
-    shutil.copyfile(source / 'bazel-bin/mediapipe/tasks/c/libmediapipe_source.dylib', native)
+    shutil.copyfile(source / profile['native_output'], native)
     subprocess.run(['/usr/bin/codesign', '--force', '--sign', '-', str(native)], check=True)
     wheel = make_wheel(template, native, work / 'wheels', profile)
     record = {'custom_build': True, 'experimental': True, 'distribution_ready': False,

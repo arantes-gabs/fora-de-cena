@@ -29,7 +29,8 @@ def runtime_signature(root: Path = ROOT) -> str:
     paths += [root / 'main.py', root / 'camera_output' / 'main.py', root / 'camera_output' / 'worker.spec',
               root / 'packaging' / 'fora_de_cena.spec', root / 'requirements.lock.txt']
     for relative in ('packaging/fora_de_cena_unix.spec', 'tools/build_unix.py', 'tools/macos_bundle.py', 'requirements-build.txt',
-                     'requirements-opencv-build.txt', 'tools/build_minimal_opencv.py',
+                     'requirements-opencv-build.txt', 'tools/build_minimal_opencv.py', 'tools/opencv_profile.py',
+                     'requirements-numpy-build.txt', 'tools/build_minimal_numpy.py',
                      'tools/distribution_licenses.py', 'tools/package_release.py',
                      'tools/opencv_artifact.py', 'packaging/opencv-minimal-profile.json',
                      'packaging/opencv-minimal-source.patch'):

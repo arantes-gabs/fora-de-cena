@@ -1,4 +1,7 @@
-# Licenças e componentes — Fora de Cena 0.4.0
+# Licenças e componentes — Fora de Cena
+
+O documento preserva a análise da versão Windows 0.4.0 e identifica abaixo as
+alterações da candidata 0.5.0-beta.1. Os novos candidatos não estão liberados.
 
 ## Dois programas independentes
 
@@ -130,3 +133,54 @@ testes físicos do novo candidato e verificação de rede do MediaPipe pendentes
 ## Tentativa experimental MediaPipe para Mac Intel
 
 A receita local usa o código C API do MediaPipe 1.1.1, commit `50505c8312c7eacb1bd411cecdc4cc9fd08d53cb`, e preserva os arquivos Python, LICENSE e demais avisos da wheel oficial da mesma versão. A biblioteca nativa é compilada para x86_64 e a wheel modificada recebe a build tag `1fdcintel`; não é uma wheel Intel oficial do fornecedor. O perfil e a proveniência identificam os insumos e hashes. A compilação Intel está sendo tentada no CI, ainda sem aprovação de todos os testes; a revisão completa das dependências C/C++ e fontes correspondentes permanece pendente. Nenhum pacote foi autorizado para distribuição por esta receita. Consulte [MAC_INTEL.md](MAC_INTEL.md).
+
+### Revisão por arquitetura — candidata 0.5.0-beta.1
+
+As bibliotecas efetivas variam por sistema/chip; o aviso genérico de uma wheel
+não substitui a inspeção de seus binários.
+
+| Alvo | Recorte selecionado | Revisão |
+| --- | --- | --- |
+| Windows x64 | OpenCV oficial sem o plugin FFmpeg, NumPy oficial | Política anterior preservada; novos pacotes precisam de novo autoteste |
+| Mac ARM64 | OpenCV próprio com AVFoundation/JPEG, NumPy oficial macOS 14+ | Sem FFmpeg/GStreamer/HighGUI no OpenCV; NumPy selecionado não contém bibliotecas vendorizadas OpenBLAS/Fortran |
+| Mac Intel | OpenCV Python oficial, MediaPipe próprio com OpenCV privado 3.4.11 | Wheel OpenCV Intel efetiva informa FFmpeg/GStreamer NO; C API própria e conjunto nativo ainda em validação |
+| Linux x64/ARM64 | OpenCV próprio com V4L2/JPEG e NumPy próprio sem BLAS externo | Receitas em teste; devem recusar FFmpeg/Qt e BLAS/Fortran externos antes do empacotamento |
+
+Identificação das wheels oficiais inspecionadas no PyPI, por SHA-256:
+
+- OpenCV Intel 4.14.0.94, `macosx_14_0_x86_64`: `8171c172e412721d5e53347cfbd393bcfbd1441d88b8c0cea50cfde0a60cf8e8`.
+- NumPy 2.5.4, CPython 3.14, `macosx_14_0_arm64`: `956555e0603a4d38019ae6925711cb9dc43195c076a928accf7ea5d50bddfe53`.
+- NumPy 2.5.4, CPython 3.14, `macosx_14_0_x86_64`: `2c2c4afffdeb7920e445028dd71eb932cac3e704792e964bc2a232426d4f1255`.
+
+NumPy Linux é compilado do sdist 2.5.4, SHA-256
+`9a94cf751c9ad8ebaa835bcd3d40dacf8534ad086b88c38029b65123c7999d2a`,
+sem alteração dos fontes, com BLAS/LAPACK externos desligados e fallback interno
+permitido pela receita oficial. Isso evita incluir o libquadmath LGPL da wheel
+Linux x64. O build deve conferir os DT_NEEDED e vincular a wheel instalada à
+proveniência. Os avisos BSD-3-Clause, 0BSD, MIT, Zlib, CC0 e dos componentes
+incluídos acompanham a wheel própria e são coletados nos pacotes.
+
+Fontes e opções: [NumPy](https://numpy.org/doc/stable/building/blas_lapack.html),
+`tools/build_minimal_numpy.py` e `requirements-numpy-build.txt`.
+
+O OpenCV privado Intel usa o arquivo oficial 3.4.11, SHA-256
+`10898a0268d8f8cbaf0354ddd1d9de6abaac84e3d9a6c9754f56a0aa3383d73b`.
+Seu aviso BSD original está em `packaging/notices/OPENCV-3.4.11.txt`.
+A alteração própria fica no patch MediaPipe; a zlib permanece a do SDK macOS.
+O Eigen escolhido pelo WORKSPACE upstream tem commit
+`ea13a98decd497a8c5588fb5de71b57bcf10d864`, SHA-256
+`35c6126e246585d9cf6600b65471582c2701aae64b784a6fd19168a90cfc841e`;
+seus [fontes correspondentes](https://gitlab.com/libeigen/eigen/-/archive/ea13a98decd497a8c5588fb5de71b57bcf10d864/eigen-ea13a98decd497a8c5588fb5de71b57bcf10d864.tar.gz)
+e o NOTICE completo do MediaPipe permanecem disponíveis. Não alteramos esses
+headers ou removemos seus avisos MPL-2.0.
+
+OpenSSL 3.x usa Apache-2.0; a licença explícita acompanha os avisos. Bibliotecas
+de runtime GCC eventualmente coletadas usam GPL com a exceção aplicável do
+runtime; o texto da exceção 3.1 e a GPLv3 acompanham os avisos. A exceção não se
+estende a libquadmath, FFmpeg ou outros componentes com termos diferentes.
+Referências: [OpenSSL](https://github.com/openssl/openssl/blob/openssl-3.5.7/LICENSE.txt)
+e [exceção GCC](https://www.gnu.org/licenses/gcc-exception-3.1.html).
+
+A seleção precisa ser confirmada novamente no inventário do pacote que será
+publicado. Esta revisão não remove a pendência de rede do MediaPipe nem substitui
+os testes físicos. `distribution_ready=false` permanece.

@@ -1,5 +1,8 @@
 #ifndef AppVersion
-  #define AppVersion "0.4.0"
+  #define AppVersion "0.5.0-beta.1"
+#endif
+#ifndef AppNumericVersion
+  #define AppNumericVersion "0.5.0.1"
 #endif
 #ifndef PayloadDir
   #error PayloadDir deve apontar para o pacote validado
@@ -12,9 +15,9 @@
 AppId={{DC9A750F-9098-4E03-8184-C1DB480A63D8}
 AppName=Fora de Cena
 AppVersion={#AppVersion}
-VersionInfoVersion={#AppVersion}
+VersionInfoVersion={#AppNumericVersion}
 VersionInfoTextVersion={#AppVersion}
-VersionInfoProductVersion={#AppVersion}
+VersionInfoProductVersion={#AppNumericVersion}
 AppPublisher=Fora de Cena contributors
 DefaultDirName={localappdata}\Programs\ForaDeCena
 DefaultGroupName=Fora de Cena

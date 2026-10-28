@@ -3,10 +3,12 @@ from __future__ import annotations
 import argparse
 import hashlib
 from pathlib import Path
+import sys
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = '0.4.0'
+sys.path.insert(0,str(ROOT))
+from teleport_cam import __version__ as VERSION
 FILES = (
     '.gitignore', '.gitattributes', 'LICENSE', 'README.md', 'COMO_USAR.md',
     'GUIA_RAPIDO.html', 'PRIVACY.md', 'SECURITY.md', 'THIRD_PARTY_NOTICES.md',
@@ -14,7 +16,7 @@ FILES = (
     'NOTAS_DA_VERSAO.md', 'MAC_LINUX.md', 'OPENCV_ENXUTO_MAC.md', 'main.py', 'setup_models.py', 'smoke_test.py',
     '.github/workflows/native-candidates.yml',
     'requirements.txt', 'requirements.lock.txt', 'requirements-build.txt',
-    'requirements-opencv-build.txt', 'packaging/opencv-minimal-profile.json',
+    'requirements-opencv-build.txt', 'requirements-numpy-build.txt', 'packaging/opencv-minimal-profile.json',
     'packaging/opencv-minimal-source.patch',
     'packaging/mediapipe-intel-profile.json', 'packaging/mediapipe-intel-source.patch', 'MAC_INTEL.md', 'MULTIPLATAFORMA.md',
     'INICIAR.bat', 'INSTALAR.bat', 'camera_output/LICENSE',

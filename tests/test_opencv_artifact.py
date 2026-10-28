@@ -68,9 +68,33 @@ class OpenCVArtifactTests(unittest.TestCase):
             self.skipTest("Only required for the explicit custom OpenCV candidate")
         import cv2
         report=inspect_runtime(cv2)
-        self.assertTrue(report["avfoundation"])
+        import sys
+        self.assertTrue(report['avfoundation'] if sys.platform=='darwin' else report['v4l2'])
         self.assertFalse(report["camera_opened"])
         self.assertFalse(hasattr(cv2,"imshow"))
+
+    def test_native_recipes_preserve_webcam_codecs_without_unused_video_or_gui(self):
+        from tools.opencv_profile import cmake_profile, native_target
+        profile=json.loads((ROOT/'packaging/opencv-minimal-profile.json').read_text())
+        for system,machine,target in [('darwin','arm64','macos-arm64'),
+                                      ('linux','x86_64','linux-x86_64'),
+                                      ('linux','aarch64','linux-arm64')]:
+            with self.subTest(target=target):
+                self.assertEqual(native_target(system,machine),target)
+                flags=cmake_profile(profile,target)
+                self.assertEqual(flags['WITH_JPEG'],'ON')
+                self.assertEqual(flags['WITH_FFMPEG'],'OFF')
+                self.assertEqual(flags['BUILD_opencv_highgui'],'OFF')
+                if system=='linux':
+                    self.assertEqual(flags['WITH_V4L'],'ON')
+                    self.assertEqual(flags['WITH_IPP'],'OFF')
+                    self.assertEqual(flags['WITH_KLEIDICV'],'OFF')
+                    self.assertFalse(any(key.startswith('CMAKE_OSX_') for key in flags))
+                    self.assertEqual(flags['WITH_AVFOUNDATION'],'OFF')
+                else:
+                    self.assertEqual(flags['WITH_AVFOUNDATION'],'ON')
+        with self.assertRaises(RuntimeError):
+            native_target('win32','amd64')
 
 
 class CompliancePackageTests(unittest.TestCase):

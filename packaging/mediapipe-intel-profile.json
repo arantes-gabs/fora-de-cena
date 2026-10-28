@@ -18,12 +18,22 @@
     "url": "https://files.pythonhosted.org/packages/23/22/d113d29c97a4c9459ece90d9b70e81e790550f4ee7d0574042b0b9306ff9/mediapipe-1.1.1-py3-none-macosx_11_0_arm64.whl",
     "sha256": "b22892847fbc6201959d20b2b9a1c9c34cda991e072f58ab0c38008dc789d4b1"
   },
-  "build_target": "//mediapipe/tasks/c:mediapipe_source",
+  "build_target": "//mediapipe/tasks/c:mediapipe_tasks_vision_lib",
   "native_member": "mediapipe/tasks/c/libmediapipe.dylib",
   "wheel_filename": "mediapipe-1.1.1-1fdcintel-py3-none-macosx_15_0_x86_64.whl",
   "rationale": "Build the current C API directly for Intel. Keep the official Python files and notices, replace the entire native library, regenerate wheel tags and RECORD. Never relabel an ARM binary as Intel or downgrade runtime pins. Native compilation and integration tests are pending.",
-  "source_patch_sha256": "8461d6689478868e7edf34dd5251604476c3ff48c4df82d67747817a1ca1851d",
+  "source_patch_sha256": "c126d0f441d05638584bb73aa48e2406091b63db9ea253113a3a3e994a1d28ee",
   "source_build_file_sha256": "6f5e8a91544bdd6214a3dce0dbc186aded0c805eee2f301e1fbff2211f818755",
   "private_opencv": "Static core/imgproc/imgcodecs/video/features2d/flann/calib3d, external codecs/GUI disabled. Application cv2 remains the separately installed official wheel.",
-  "system_zlib_from_macos_sdk": true
+  "system_zlib_from_macos_sdk": true,
+  "source_workspace_sha256": "80f416c8c0bc08003dbd93a23168b3e7dd214c8508a73d929a33f79e9f2dd501",
+  "private_opencv_source": {
+    "filename": "opencv-3.4.11.tar.gz",
+    "url": "https://github.com/opencv/opencv/archive/3.4.11.tar.gz",
+    "sha256": "10898a0268d8f8cbaf0354ddd1d9de6abaac84e3d9a6c9754f56a0aa3383d73b"
+  },
+  "native_output": "bazel-bin/mediapipe/tasks/c/libmediapipe_tasks_vision.dylib",
+  "enabled_domains": [
+    "vision"
+  ]
 }

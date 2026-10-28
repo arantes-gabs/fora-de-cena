@@ -7,6 +7,7 @@
 *.yml text eol=lf
 *.spec text eol=lf
 *.patch text eol=lf whitespace=-blank-at-eol
+packaging/notices/GCC-RUNTIME-EXCEPTION-3.1.txt whitespace=-blank-at-eof
 *.txt text eol=lf
 *.bat text eol=crlf
 *.png binary

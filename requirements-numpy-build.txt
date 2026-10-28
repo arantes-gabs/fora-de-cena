@@ -1,0 +1,8 @@
+# Separate Linux CI build environment; never installed on the user's computer.
+pip==26.2.2
+packaging==26.3
+meson-python==0.22.1
+meson==1.12.1
+pyproject-metadata==0.12.1
+Cython==3.3.0
+ninja==1.13.2

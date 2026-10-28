@@ -7,6 +7,7 @@ import sys
 from PyInstaller.utils.hooks import collect_data_files, collect_dynamic_libs
 
 root = Path(SPECPATH).parent
+from teleport_cam import __version__, __windows_version__
 if sys.platform not in ('darwin', 'linux'):
     raise RuntimeError('Run this recipe on macOS or Linux.')
 work = Path(os.environ['FDC_UNIX_WORK']).resolve()
@@ -29,7 +30,8 @@ datas += collect_data_files('customtkinter') + collect_data_files('mediapipe')
 a = Analysis([str(root / 'main.py')], pathex=[str(root)],
     binaries=collect_dynamic_libs('mediapipe'), datas=datas,
     hiddenimports=['mediapipe.tasks.c'], hooksconfig={'matplotlib': {'backends': ['Agg']}},
-    excludes=['IPython', 'jupyter', 'pytest', 'sounddevice', 'pyvirtualcam', 'camera_output'], noarchive=False)
+    excludes=['IPython', 'jupyter', 'pytest', 'readline', 'sounddevice', 'pyvirtualcam', 'camera_output'], noarchive=False)
+a.datas = [entry for entry in a.datas if Path(entry[0]).name != 'direct_url.json']
 # Unix OpenCV may link FFmpeg directly: do not remove its libraries and break loading.
 # The native codec/GUI libraries still need a corresponding-source/license review.
 if any(name == 'pyvirtualcam' or name.startswith('pyvirtualcam.') for name, source, kind in a.pure):
@@ -50,6 +52,9 @@ if sys.platform == 'darwin':
     app = BUNDLE(coll, name='Fora de Cena.app', icon=str(work / 'app-icon.icns'),
         bundle_identifier='app.foradecena.desktop', info_plist={
             'CFBundleDisplayName': 'Fora de Cena', 'LSMinimumSystemVersion': deployment_target,
+            'CFBundleShortVersionString': '.'.join(map(str,__windows_version__[:3])),
+            'CFBundleVersion': str(__windows_version__[-1]),
+            'CFBundleGetInfoString': 'Fora de Cena '+__version__,
             'NSCameraUsageDescription': 'A câmera é usada para aplicar os efeitos locais escolhidos por você.',
             'NSHighResolutionCapable': True,
         })

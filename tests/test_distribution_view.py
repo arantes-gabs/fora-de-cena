@@ -3,7 +3,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from tools.prepare_distribution import ROOT, prepare, repository_files
+from tools.prepare_distribution import ROOT, VERSION, prepare, repository_files
 
 
 class DistributionViewTests(unittest.TestCase):
@@ -34,7 +34,7 @@ class DistributionViewTests(unittest.TestCase):
             root = Path(folder)
             source = root / 'source.py'
             source.write_text('pass')
-            destination = root / 'dist/source-review/v0.4.0/repository'
+            destination = root / 'dist/source-review' / ('v'+VERSION) / 'repository'
             destination.mkdir(parents=True)
             private = destination / 'user_settings.json'
             private.write_text('private fixture')

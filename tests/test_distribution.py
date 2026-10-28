@@ -9,6 +9,16 @@ class SourceReleaseTests(unittest.TestCase):
     def test_release_version_matches_application(self):
         self.assertEqual(VERSION,__version__)
 
+    def test_windows_installer_and_executable_metadata_match_the_candidate(self):
+        from teleport_cam import __windows_version__
+        numeric=','.join(map(str,__windows_version__))
+        info=(ROOT/'packaging/version_info.txt').read_text()
+        self.assertIn('filevers=('+numeric+')',info)
+        self.assertIn("StringStruct('ProductVersion', '"+__version__+"')",info)
+        installer=(ROOT/'packaging/installer.iss').read_text()
+        self.assertIn('#define AppVersion "'+__version__+'"',installer)
+        self.assertIn('#define AppNumericVersion "'+'.'.join(map(str,__windows_version__))+'"',installer)
+
     def test_source_release_excludes_private_and_downloaded_files(self):
         paths=release_files()
         names={path.relative_to(ROOT).as_posix() for path in paths}

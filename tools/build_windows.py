@@ -16,7 +16,7 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from teleport_cam import __version__
+from teleport_cam import __version__, __windows_version__
 from teleport_cam.model_assets import MODEL_ASSETS
 from setup_models import verify_model
 from tools.distribution_licenses import prepare_model_notices, package_compliance, upstream_files, runtime_signature
@@ -232,7 +232,8 @@ def build(iscc: Path, portable_only: bool = False, single_file: bool = False) ->
     verify_portable(portable, work)
     artifacts = [portable]
     if not portable_only:
-        subprocess.run([str(iscc), f'/DAppVersion={__version__}', f'/DPayloadDir={payload}',
+        subprocess.run([str(iscc), f'/DAppVersion={__version__}',
+                        '/DAppNumericVersion='+'.'.join(map(str,__windows_version__)), f'/DPayloadDir={payload}',
                         f'/DOutputDir={output}', str(ROOT / 'packaging' / 'installer.iss')],
                        cwd=ROOT, check=True)
         installer = output / f'ForaDeCena-{__version__}-Setup.exe'

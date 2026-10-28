@@ -17,9 +17,15 @@ Essa versão antiga não é selecionada automaticamente.
 
 A receita usa o código C API da tag oficial `v1.1.1`, conferindo o commit
 `50505c8312c7eacb1bd411cecdc4cc9fd08d53cb`. Compila diretamente o target
-`//mediapipe/tasks/c:mediapipe_source` com Bazel 7.7.0, CPU Intel e execução
+`//mediapipe/tasks/c:mediapipe_tasks_vision_lib` com Bazel 7.7.0, CPU Intel e execução
 de modelos em CPU. Assim evita o `setup.py`, que fixa ARM no Mac, e o target
 que pode escolher uma biblioteca ARM pré-compilada.
+
+É o target oficial do domínio de visão, com biblioteca independente, exportação
+somente da API C e remoção do código não referenciado. Não inclui os domínios de
+áudio, texto ou busca do pacote monolítico. A wheel é dedicada a este aplicativo;
+não substitui uma instalação MediaPipe completa para outros projetos. Os testes
+devem confirmar importação, mãos, face e segmentação antes do empacotamento.
 
 Um patch pequeno e identificado por SHA-256 configura o OpenCV privado da C API
 como estático, com processamento de imagens em memória e codecs externos/GUI
@@ -27,6 +33,8 @@ desligados. O OpenCV Python usado pelo app para câmera e JPEG permanece separad
 Isso evita depender da lista de bibliotecas Linux do build estático original
 no Mac. A compatibilidade desse perfil C/C++ também precisa do primeiro build
 Intel; o patch não substitui os testes de inferência ou a revisão de licenças.
+O arquivo OpenCV 3.4.11 também tem SHA-256 fixado no WORKSPACE, além do commit
+MediaPipe, do Bazel e do template Python.
 
 Os arquivos Python e avisos da wheel oficial da mesma versão são preservados.
 A biblioteca ARM é substituída por uma **nova biblioteca compilada e auditada

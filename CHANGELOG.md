@@ -1,6 +1,6 @@
 # Histórico de versões
 
-## Em desenvolvimento — Mac e Linux
+## 0.5.0-beta.1 — candidata em validação, não lançada
 
 - Integração das correções testadas no Mac M1: Configurar em janela nativa no Mac,
   autorização da extensão de câmera do OBS e auditoria do mínimo real do macOS.
@@ -13,6 +13,10 @@
 - Pillow atualizado para 13.0.0; dependências específicas por marcadores de plataforma.
 - Receita de build nativo experimental, testes dos adaptadores e workflow de testes em branch separada, com execução manual prevista.
 - Novos pacotes ainda dependem de build/teste nativo, revisão das bibliotecas e aprovação para publicação.
+- Versão dos pacotes, recursos Windows e metadados do APP separados da versão pública anterior.
+- Compilação enxuta do OpenCV estendida ao Linux, com V4L2/JPEG e sem FFmpeg/Qt.
+- Receita NumPy Linux da mesma versão sem BLAS/Fortran externos, ainda em validação nativa.
+- Observação sintética de syscalls de rede no Linux, sem captura de pacotes ou tráfego pessoal.
 
 ## 0.4.0
 

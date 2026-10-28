@@ -72,5 +72,11 @@
     "CMAKE_SKIP_RPATH": "ON"
   },
   "addition_rationale": "Exact source CMake options reviewed: retain built-in static JPEG/PNG/zlib and AVFoundation; disable unused image formats, trace/OpenCL/LAPACK/Eigen and optional external libraries. Entire bundle minimum remains audited.",
-  "source_patch_rationale": "Remap private paths in embedded build information; skip manual typing refinements only for symbols in optional modules absent from BUILD_LIST."
+  "source_patch_rationale": "Remap private paths in embedded build information; skip manual typing refinements only for symbols in optional modules absent from BUILD_LIST.",
+  "cmake_linux_additions": {
+    "WITH_IPP": "OFF",
+    "WITH_KLEIDICV": "OFF",
+    "WITH_TBB": "OFF",
+    "WITH_OPENMP": "OFF"
+  }
 }

@@ -65,15 +65,21 @@ def build() -> None:
         with license_path.open('xb') as output:
             output.write(license_bytes)
         command = [sys.executable, 'tools/build_unix.py', '--python-license', str(license_path)]
-        if sys.platform == 'darwin':
-            intel = platform.machine().lower() == 'x86_64'
+        if sys.platform in ('darwin', 'linux'):
+            intel = sys.platform == 'darwin' and platform.machine().lower() == 'x86_64'
             folder = 'mediapipe-intel' if intel else 'opencv-minimal'
             wheels = list((ROOT / 'work' / folder / 'wheels').glob('*.whl'))
             if len(wheels) != 1:
-                raise ValueError('Expected one explicit custom wheel for the Mac target')
+                raise ValueError('Expected one explicit custom wheel for the native target')
             prefix = '--mediapipe' if intel else '--opencv'
             command += [prefix + '-wheel', str(wheels[0]), prefix + '-provenance',
                         str(ROOT / 'work' / folder / 'provenance.json')]
+        if sys.platform=='linux':
+            from tools.build_minimal_numpy import validate_artifact
+            wheels=list((ROOT/'work/numpy-minimal/wheels').glob('*.whl'))
+            if len(wheels)!=1:
+                raise ValueError('Expected one explicit NumPy wheel for the Linux target')
+            validate_artifact(wheels[0], ROOT/'work/numpy-minimal/provenance.json')
     subprocess.run(command, cwd=ROOT, check=True)
 
 

@@ -1,4 +1,4 @@
-FORA DE CENA 0.4.0
+FORA DE CENA 0.5.0-beta.1 — CANDIDATA EM VALIDAÇÃO
 
 Este pacote inclui Python, bibliotecas e modelos. Não é necessário instalar Python.
 No executável único, basta abrir; os recursos são extraídos temporariamente.

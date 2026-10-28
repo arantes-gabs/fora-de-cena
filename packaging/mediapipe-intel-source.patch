@@ -1,3 +1,13 @@
+--- a/WORKSPACE
++++ b/WORKSPACE
+@@ -524,6 +524,7 @@
+ http_archive(
+     name = "opencv",
+     build_file_content = all_content,
++    sha256 = "10898a0268d8f8cbaf0354ddd1d9de6abaac84e3d9a6c9754f56a0aa3383d73b",
+     strip_prefix = "opencv-3.4.11",
+     urls = ["https://github.com/opencv/opencv/archive/3.4.11.tar.gz"],
+ )
 --- a/third_party/BUILD
 +++ b/third_party/BUILD
 @@ -151,9 +151,8 @@

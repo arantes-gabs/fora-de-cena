@@ -74,7 +74,7 @@ jobs:
           python -m pip install --only-binary=:all: packaging==26.3
           python tools/check_platform_wheels.py ${{ matrix.target }} --report work/wheels.json
       - name: Build reviewed minimal OpenCV in a separate environment
-        if: runner.os == 'macOS' && env.BUILD_CANDIDATES == 'true'
+        if: runner.os != 'Windows' && env.BUILD_CANDIDATES == 'true'
         run: |
           python tools/prepare_minimal_opencv.py
           python -m venv work/opencv-build-env
@@ -82,7 +82,10 @@ jobs:
           work/opencv-build-env/bin/python tools/build_minimal_opencv.py --source work/opencv-minimal/source/opencv_contrib_python-4.14.0.94
       - name: Install pinned application dependencies
         run: |
-          if [[ "$RUNNER_OS" == "macOS" && "$BUILD_CANDIDATES" == "true" ]]; then
+          if [[ "$RUNNER_OS" == "Linux" && "$BUILD_CANDIDATES" == "true" ]]; then
+            python tools/build_minimal_numpy.py
+            python -m pip install --only-binary=:all: work/numpy-minimal/wheels/*.whl work/opencv-minimal/wheels/*.whl -r requirements.lock.txt -r requirements-build.txt
+          elif [[ "$RUNNER_OS" == "macOS" && "$BUILD_CANDIDATES" == "true" ]]; then
             python -m pip install --only-binary=:all: work/opencv-minimal/wheels/*.whl -r requirements.lock.txt -r requirements-build.txt
           else
             python -m pip install --only-binary=:all: -r requirements.lock.txt -r requirements-build.txt
@@ -90,7 +93,7 @@ jobs:
           python -m pip check
       - name: Synthetic tests (no camera)
         env:
-          FDC_TEST_MINIMAL_OPENCV: ${{ runner.os == 'macOS' && env.BUILD_CANDIDATES == 'true' && '1' || '' }}
+          FDC_TEST_MINIMAL_OPENCV: ${{ runner.os != 'Windows' && env.BUILD_CANDIDATES == 'true' && '1' || '' }}
         run: |
           python -m unittest discover -s tests -q
           node --test tests/meet_extension.test.mjs
