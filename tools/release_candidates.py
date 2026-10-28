@@ -83,7 +83,13 @@ def draft(create=False):
     tag='v'+__version__
     route='repos/'+REPOSITORY+'/releases'
     # The tag lookup returns published releases only. Drafts require the list API.
-    records=json.loads(gh(['api','--hostname','github.com',route+'?per_page=100']))
+    release_id=os.environ.get('FDC_DRAFT_RELEASE_ID','')
+    if release_id:
+        if not re.fullmatch('[1-9][0-9]*',release_id):
+            raise ValueError('Invalid review draft ID.')
+        records=[json.loads(gh(['api','--hostname','github.com',route+'/'+release_id]))]
+    else:
+        records=json.loads(gh(['api','--hostname','github.com',route+'?per_page=100']))
     matches=[record for record in records if record.get('tag_name')==tag]
     if len(matches)>1:
         raise RuntimeError('Ambiguous draft tag; do not update or overwrite releases.')
@@ -181,8 +187,8 @@ def candidate_files(target):
     return selected
 
 
-def upload(files, target):
-    record=draft()
+def upload(files, target, record=None):
+    record=draft() if record is None else record
     stage=ROOT/'work/draft-upload'/target
     if stage.exists() or not stage.resolve().is_relative_to(ROOT.resolve()):
         raise ValueError('Use a new candidate upload staging directory.')
@@ -220,8 +226,10 @@ def main():
         print(json.dumps(matrix(args.target)))
     elif args.action=='prepare':
         require_context()
-        draft(create=True)
-        upload([source_zip(destination=ROOT/'work/draft-source')],'source')
+        record=draft(create=True)
+        upload([source_zip(destination=ROOT/'work/draft-source')],'source',record)
+        with Path(os.environ['GITHUB_OUTPUT']).open('a',encoding='utf-8') as output:
+            output.write('release_id='+str(record['id'])+'\n')
     else:
         require_context()
         upload(candidate_files(args.target),args.target)

@@ -5,11 +5,41 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from tools.release_candidates import REPOSITORY, __version__, draft, gh, matrix, passed_report, require_context, upload_asset
+from tools.release_candidates import REPOSITORY, __version__, draft, gh, main, matrix, passed_report, require_context, upload_asset
 from tools.ci_native import intel_compatibility
 
 
 class DraftCandidateTests(unittest.TestCase):
+    def test_prepare_reuses_creation_response_and_exports_id_for_native_jobs(self):
+        record={'id':123}
+        with tempfile.TemporaryDirectory() as directory:
+            output=Path(directory)/'output'
+            with patch('sys.argv',['release_candidates.py','prepare']), \
+                    patch.dict(os.environ,{'GITHUB_OUTPUT':str(output)},clear=True), \
+                    patch('tools.release_candidates.require_context'), \
+                    patch('tools.release_candidates.draft',return_value=record) as lookup, \
+                    patch('tools.release_candidates.source_zip',return_value=Path('fixture.zip')), \
+                    patch('tools.release_candidates.upload') as send:
+                main()
+            lookup.assert_called_once_with(create=True)
+            self.assertEqual(send.call_args.args[2],record)
+            self.assertEqual(output.read_text(encoding='utf-8'),'release_id=123\n')
+
+    def test_native_upload_fetches_exact_prepared_draft_id(self):
+        record={'id':123,'tag_name':'v'+__version__,'draft':True,'prerelease':True,'target_commitish':'a'*40}
+        with patch('tools.release_candidates.require_context',return_value='a'*40), \
+                patch.dict(os.environ,{'FDC_DRAFT_RELEASE_ID':'123'},clear=True), \
+                patch('tools.release_candidates.gh',return_value=json.dumps(record)) as call:
+            self.assertEqual(draft()['id'],123)
+        self.assertTrue(call.call_args.args[0][-1].endswith('/releases/123'))
+
+    def test_prepared_draft_id_cannot_redirect_the_request(self):
+        with patch('tools.release_candidates.require_context',return_value='a'*40), \
+                patch.dict(os.environ,{'FDC_DRAFT_RELEASE_ID':'../other'},clear=True), \
+                patch('tools.release_candidates.gh') as call, self.assertRaises(ValueError):
+            draft()
+        call.assert_not_called()
+
     def test_draft_lookup_uses_authenticated_list_and_does_not_create_a_duplicate(self):
         record={'id':123,'tag_name':'v'+__version__,'draft':True,'prerelease':True,'target_commitish':'a'*40}
         with patch('tools.release_candidates.require_context',return_value='a'*40), \

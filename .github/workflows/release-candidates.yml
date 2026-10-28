@@ -42,6 +42,7 @@ jobs:
       contents: write
     outputs:
       matrix: ${{ steps.plan.outputs.matrix }}
+      release_id: ${{ steps.draft.outputs.release_id }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -57,6 +58,7 @@ jobs:
         run: |
           printf 'matrix=%s\n' "$(python tools/release_candidates.py plan --target "$FDC_TARGET")" >> "$GITHUB_OUTPUT"
       - name: Prepare matching beta draft and reviewed source archive
+        id: draft
         env:
           GH_TOKEN: ${{ github.token }}
         run: python tools/release_candidates.py prepare
@@ -136,4 +138,5 @@ jobs:
       - name: Upload allowlisted assets only to the matching unpublished draft
         env:
           GH_TOKEN: ${{ github.token }}
+          FDC_DRAFT_RELEASE_ID: ${{ needs.prepare.outputs.release_id }}
         run: python tools/release_candidates.py upload --target ${{ matrix.target }}
