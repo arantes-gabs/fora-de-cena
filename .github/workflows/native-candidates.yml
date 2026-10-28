@@ -1,8 +1,8 @@
 name: Free native checks and candidates
 
 # Trusted test-branch pushes and manual runs, public repositories only.
-# No PR code, secrets, paid runners, stored artifacts or release permissions.
-# Generated packages are discarded with the VM; main downloads are untouched.
+# No PR code, secrets, paid runners or release permissions.
+# Only the Intel candidate stores allowlisted test artifacts for seven days; main downloads are untouched.
 on:
   push:
     branches: ['testing/mac-linux']
@@ -243,7 +243,7 @@ jobs:
       - name: Stage only validated candidate assets
         run: python tools/stage_intel_candidate.py
       - name: Store the experimental candidate for owner review (no Release)
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: ForaDeCena-macOS-Intel-experimental-${{ github.run_id }}
           path: work/intel-candidate-download/*
