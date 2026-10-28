@@ -5,11 +5,35 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from tools.release_candidates import REPOSITORY, gh, matrix, passed_report, require_context
+from tools.release_candidates import REPOSITORY, __version__, draft, gh, matrix, passed_report, require_context, upload_asset
 from tools.ci_native import intel_compatibility
 
 
 class DraftCandidateTests(unittest.TestCase):
+    def test_draft_lookup_uses_authenticated_list_and_does_not_create_a_duplicate(self):
+        record={'id':123,'tag_name':'v'+__version__,'draft':True,'prerelease':True,'target_commitish':'a'*40}
+        with patch('tools.release_candidates.require_context',return_value='a'*40), \
+                patch('tools.release_candidates.gh',return_value=json.dumps([record])) as call:
+            self.assertEqual(draft()['id'],123)
+        self.assertEqual(call.call_count,1)
+        self.assertIn('/releases?per_page=100',call.call_args.args[0][-1])
+
+    def test_upload_is_scoped_to_fixed_repository_and_does_not_follow_redirects(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path=Path(directory)/'source.zip';path.write_bytes(b'fixture')
+            with patch('tools.release_candidates.require_context'), \
+                    patch.dict(os.environ,{'GH_TOKEN':'fixture'},clear=True), \
+                    patch('tools.release_candidates.http.client.HTTPSConnection') as factory:
+                response=factory.return_value.getresponse.return_value
+                response.status=307
+                response.read.return_value=b'fixture'
+                with self.assertRaisesRegex(RuntimeError,'HTTP 307'):
+                    upload_asset(123,path)
+                factory.assert_called_once_with('uploads.github.com',timeout=600)
+                request=factory.return_value.request.call_args
+                self.assertTrue(request.args[1].startswith('/repos/'+REPOSITORY+'/releases/123/assets?'))
+                factory.return_value.close.assert_called_once()
+
     def context(self):
         return {'GITHUB_ACTIONS':'true','GITHUB_REPOSITORY':REPOSITORY,
                 'GITHUB_EVENT_NAME':'workflow_dispatch','GITHUB_REF':'refs/heads/main',

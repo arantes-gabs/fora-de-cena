@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import http.client
 import json
 import os
 from pathlib import Path
@@ -10,6 +11,7 @@ import re
 import shutil
 import subprocess
 import sys
+from urllib.parse import quote
 
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT))
@@ -80,8 +82,12 @@ def draft(create=False):
     commit=require_context()
     tag='v'+__version__
     route='repos/'+REPOSITORY+'/releases'
-    raw=gh(['api','--hostname','github.com',route+'/tags/'+tag],missing_ok=True)
-    if raw is None:
+    # The tag lookup returns published releases only. Drafts require the list API.
+    records=json.loads(gh(['api','--hostname','github.com',route+'?per_page=100']))
+    matches=[record for record in records if record.get('tag_name')==tag]
+    if len(matches)>1:
+        raise RuntimeError('Ambiguous draft tag; do not update or overwrite releases.')
+    if not matches:
         if not create:
             raise RuntimeError('Create the reviewed draft before uploading assets.')
         raw=gh(['api','--hostname','github.com','--method','POST',route,'--input','-'],{
@@ -96,11 +102,40 @@ def draft(create=False):
                     'O aplicativo não implementa telemetria própria. Consulte PRIVACY.md.\n\n'
                     'Os fontes correspondentes da saída e as licenças são específicos de cada plataforma. '
                     'Confira o arquivo SHA256SUMS da plataforma escolhida.\n')})
-    record=json.loads(raw)
+        record=json.loads(raw)
+    else:
+        record=matches[0]
     if (not record.get('draft') or not record.get('prerelease')
             or record.get('tag_name')!=tag or record.get('target_commitish')!=commit):
         raise RuntimeError('Existing release is not the matching owner review draft; do not overwrite it.')
     return record
+
+
+def upload_asset(release_id, path):
+    require_context()
+    if not isinstance(release_id,int) or release_id<=0:
+        raise ValueError('Invalid draft release ID.')
+    token=os.environ.get('GH_TOKEN')
+    if not token:
+        raise RuntimeError('The repository workflow token is required.')
+    # Fixed GitHub upload host/owner. Never follow an API-provided redirect URL.
+    route='/repos/'+REPOSITORY+'/releases/'+str(release_id)+'/assets?name='+quote(path.name,safe='')
+    headers={'Authorization':'Bearer '+token,'Accept':'application/vnd.github+json',
+             'Content-Type':'application/octet-stream','Content-Length':str(path.stat().st_size),
+             'User-Agent':'fora-de-cena-release-workflow','X-GitHub-Api-Version':'2022-11-28'}
+    connection=http.client.HTTPSConnection('uploads.github.com',timeout=600)
+    try:
+        with path.open('rb') as stream:
+            connection.request('POST',route,body=stream,headers=headers)
+            response=connection.getresponse()
+            body=response.read(1024*1024)
+            if response.status!=201:
+                raise RuntimeError('GitHub draft upload failed with HTTP '+str(response.status)+'. No credentials or response body are printed.')
+        record=json.loads(body)
+        if record.get('name')!=path.name or record.get('size')!=path.stat().st_size:
+            raise RuntimeError('Uploaded asset metadata differs from the selected file.')
+    finally:
+        connection.close()
 
 
 def passed_report(path):
@@ -171,8 +206,8 @@ def upload(files, target):
         if path.name in existing and existing[path.name]!='sha256:'+digest(path):
             raise ValueError('Existing draft asset differs; no executable, source or checksum is overwritten.')
     missing=[path for path in staged if path.name not in existing]
-    if missing:
-        gh(['release','upload','v'+__version__,'--repo','github.com/'+REPOSITORY,*map(str,missing)])
+    for path in missing:
+        upload_asset(record['id'],path)
     print('Review draft assets verified:',target,len(staged),'files. No release was published.')
 
 
