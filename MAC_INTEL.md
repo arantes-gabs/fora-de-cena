@@ -36,6 +36,11 @@ Intel; o patch não substitui os testes de inferência ou a revisão de licença
 O arquivo OpenCV 3.4.11 também tem SHA-256 fixado no WORKSPACE, além do commit
 MediaPipe, do Bazel e do template Python.
 
+O patch corrige uma colisão entre o nome de saída automático do `cc_binary`
+macOS e o genrule que o copia: a cópia recebe um nome distinto. Também limita
+o CMake privado a três tarefas paralelas. O arquivo da macro upstream é
+conferido por SHA-256 antes dessas alterações.
+
 Os arquivos Python e avisos da wheel oficial da mesma versão são preservados.
 A biblioteca ARM é substituída por uma **nova biblioteca compilada e auditada
 para Intel**. A wheel recebe build tag `1fdcintel`, plataforma x86_64 e um novo

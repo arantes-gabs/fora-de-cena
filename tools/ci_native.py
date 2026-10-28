@@ -36,6 +36,16 @@ def diagnose(target: str | None) -> int:
     return 0
 
 
+def intel_compatibility() -> None:
+    report=json.loads((ROOT/'work/wheels.json').read_text(encoding='utf-8'))
+    allowed='mediapipe: no compatible non-yanked wheel'
+    errors=report.get('errors')
+    if (report.get('target')!='macos-x86_64' or not isinstance(errors,list) or
+            any(error!=allowed for error in errors)):
+        raise ValueError('Intel compatibility check has issues beyond the reviewed MediaPipe source build.')
+    print('Intel dependency check accepted only the explicit MediaPipe source-build exception.')
+
+
 def build() -> None:
     """Use only the native builder and the license matching the CI Python pin."""
     if sys.version.split()[0] != PYTHON_VERSION:
@@ -112,13 +122,15 @@ def summarize(target: str) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('action', choices=('build', 'summary', 'diagnose'))
+    parser.add_argument('action', choices=('build', 'summary', 'diagnose', 'intel-compatibility'))
     parser.add_argument('--target')
     args = parser.parse_args()
     if args.action == 'diagnose':
         raise SystemExit(diagnose(args.target))
     elif args.action == 'build':
         build()
+    elif args.action=='intel-compatibility':
+        intel_compatibility()
     else:
         summarize(args.target)
 

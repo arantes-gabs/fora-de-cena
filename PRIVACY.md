@@ -7,6 +7,9 @@
   O aviso do fornecedor MediaPipe menciona métricas de uso/desempenho. A atividade
   de rede dessa dependência ainda requer verificação específica; processamento
   local de imagens não é uma garantia de ausência de toda conexão externa.
+- O adaptador de visão não inicializa o backend opcional sounddevice/PortAudio;
+  os executáveis também o excluem. Essa medida evita inicializar áudio por um
+  import transitivo e não é um bloqueio geral de rede da biblioteca nativa.
 - O fundo preparado fica em memória durante a sessão. Não é salvo como foto.
 - user_settings.json guarda escolhas de câmera/qualidade/efeito; pode incluir
   o identificador local da webcam. Não faz parte do Git ou pacote.

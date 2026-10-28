@@ -72,7 +72,8 @@ def main() -> None:
     patch_path = ROOT / 'packaging/mediapipe-intel-source.patch'
     if (digest(patch_path) != profile['source_patch_sha256'] or
             digest(source / 'third_party/BUILD') != profile['source_build_file_sha256'] or
-            digest(source / 'WORKSPACE') != profile['source_workspace_sha256']):
+            digest(source / 'WORKSPACE') != profile['source_workspace_sha256'] or
+            digest(source / 'mediapipe/tasks/c/mediapipe_tasks_c_shared_library.bzl') != profile['source_shared_library_sha256']):
         raise ValueError('Intel source patch or upstream OpenCV rule differs from reviewed inputs')
     subprocess.run(['/usr/bin/git', '-C', str(source), 'apply', '--check', str(patch_path)],
                    env=environment, check=True)

@@ -44,6 +44,7 @@ def trace(mode: str, folder: Path, tracer: str) -> dict[str, int]:
     environment = {'PATH': os.environ.get('PATH', '/usr/bin:/bin'), 'HOME': str(home),
                    'TMPDIR': str(folder), 'LANG': 'C.UTF-8', 'LC_ALL': 'C.UTF-8',
                    'MPLBACKEND': 'Agg', 'PYTHONUTF8': '1',
+                   'FDC_NETWORK_DIAGNOSTIC_CHILD': '1',
                    'XDG_CONFIG_HOME': str(home), 'XDG_CACHE_HOME': str(home),
                    # setup-python requires its own shared libpython on Linux.
                    'LD_LIBRARY_PATH': str(Path(sys.base_prefix) / 'lib')}
@@ -57,12 +58,18 @@ def trace(mode: str, folder: Path, tracer: str) -> dict[str, int]:
 
 
 def workload(mode: str) -> None:
+    if os.environ.get('FDC_NETWORK_DIAGNOSTIC_CHILD')!='1':
+        raise RuntimeError('Synthetic workloads are internal to the isolated CI check.')
     if mode == 'canary':
         # Deliberate loopback attempt, no payload. Proves child syscall tracing works.
         import socket
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as probe:
             probe.settimeout(1)
             probe.connect_ex(('127.0.0.1', 9))
+        return
+    if mode=='audio-control':
+        # Clean runner only: imports the optional backend without recording.
+        import sounddevice
         return
     sys.path.insert(0, str(ROOT))
     from teleport_cam.launcher import self_test
@@ -87,9 +94,14 @@ def audit() -> int:
         if canary.get('socket', 0) < 1 or canary.get('connect', 0) < 1:
             raise RuntimeError('Network tracing canary failed; no conclusion is available.')
         counts = trace('synthetic', folder, tracer)
+        try:
+            audio_counts = trace('audio-control', folder, tracer)
+        except RuntimeError:
+            audio_counts = None  # Optional comparison, never the application gate.
     report = {'scope': 'Linux source self-test, 5-second idle and process shutdown',
               'camera_opened': False, 'packet_payload_captured': False,
               'canary_verified': True, 'network_syscall_counts': counts,
+              'optional_audio_control_counts': audio_counts,
               'sample_network_syscalls_observed': any(counts.values()),
               'dependency_network_verified': False, 'distribution_ready': False}
     (work / 'dependency-network-sample.json').write_text(json.dumps(report, indent=2), encoding='utf-8')
@@ -100,7 +112,7 @@ def audit() -> int:
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--workload', choices=('canary', 'synthetic'), help=argparse.SUPPRESS)
+    parser.add_argument('--workload', choices=('canary', 'synthetic', 'audio-control'), help=argparse.SUPPRESS)
     args = parser.parse_args()
     if args.workload:
         workload(args.workload)

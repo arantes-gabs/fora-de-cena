@@ -14,7 +14,7 @@ FILES = (
     'GUIA_RAPIDO.html', 'PRIVACY.md', 'SECURITY.md', 'THIRD_PARTY_NOTICES.md',
     'CONTRIBUTING.md', 'CHANGELOG.md', 'DESENVOLVIMENTO.md', 'DISTRIBUIR.md',
     'NOTAS_DA_VERSAO.md', 'MAC_LINUX.md', 'OPENCV_ENXUTO_MAC.md', 'main.py', 'setup_models.py', 'smoke_test.py',
-    '.github/workflows/native-candidates.yml',
+    '.github/workflows/native-candidates.yml', '.github/workflows/release-candidates.yml',
     'requirements.txt', 'requirements.lock.txt', 'requirements-build.txt',
     'requirements-opencv-build.txt', 'requirements-numpy-build.txt', 'packaging/opencv-minimal-profile.json',
     'packaging/opencv-minimal-source.patch',

@@ -22,7 +22,7 @@
   "native_member": "mediapipe/tasks/c/libmediapipe.dylib",
   "wheel_filename": "mediapipe-1.1.1-1fdcintel-py3-none-macosx_15_0_x86_64.whl",
   "rationale": "Build the current C API directly for Intel. Keep the official Python files and notices, replace the entire native library, regenerate wheel tags and RECORD. Never relabel an ARM binary as Intel or downgrade runtime pins. Native compilation and integration tests are pending.",
-  "source_patch_sha256": "c126d0f441d05638584bb73aa48e2406091b63db9ea253113a3a3e994a1d28ee",
+  "source_patch_sha256": "a573154e0698abece97b214f2d81dc68cc02069df3561e2e6fa39078fec8e94c",
   "source_build_file_sha256": "6f5e8a91544bdd6214a3dce0dbc186aded0c805eee2f301e1fbff2211f818755",
   "private_opencv": "Static core/imgproc/imgcodecs/video/features2d/flann/calib3d, external codecs/GUI disabled. Application cv2 remains the separately installed official wheel.",
   "system_zlib_from_macos_sdk": true,
@@ -32,8 +32,9 @@
     "url": "https://github.com/opencv/opencv/archive/3.4.11.tar.gz",
     "sha256": "10898a0268d8f8cbaf0354ddd1d9de6abaac84e3d9a6c9754f56a0aa3383d73b"
   },
-  "native_output": "bazel-bin/mediapipe/tasks/c/libmediapipe_tasks_vision.dylib",
+  "native_output": "bazel-bin/mediapipe/tasks/c/libmediapipe_tasks_vision-fdc-copy.dylib",
   "enabled_domains": [
     "vision"
-  ]
+  ],
+  "source_shared_library_sha256": "a38848483d567c2053c7359d5a5d6d9b7875d1401b04cba5bc99afab4ee663a0"
 }

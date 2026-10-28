@@ -142,6 +142,7 @@ jobs:
       - name: Compile current MediaPipe C API for Intel (experimental)
         if: env.BUILD_INTEL == 'true'
         run: |
+          python tools/ci_native.py intel-compatibility
           python -m pip install --only-binary=:all: macholib==1.16.4 altgraph==0.17.5
           python tools/build_mediapipe_intel.py
       - name: Install the explicit custom Intel wheel and locked application

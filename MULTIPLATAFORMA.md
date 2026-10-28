@@ -6,13 +6,13 @@ anúncio de suporte nativo aprovado para Mac/Linux nem nova tag de versão.
 
 ## Matriz de validação
 
-| Alvo | Saída prevista | Estado após a terceira rodada (Intel ainda em execução) |
+| Alvo | Saída prevista | Estado da candidata 0.5.0-beta.1 |
 | --- | --- | --- |
-| Windows x64 | EXE portátil e instalador por usuário | Testes de fontes, EXE portátil, pacote em pasta e instalador passaram no CI; testes físicos da atualização pendentes |
-| Mac Apple Silicon | APP dentro de DMG | OpenCV enxuto, testes de fontes, inferência, DMG e autoteste do APP passaram; teste físico desta compilação pendente |
-| Mac Intel x86_64 | APP dentro de DMG | Compilação experimental do MediaPipe em execução; sem suporte confirmado |
-| Linux x86_64 | TAR.GZ com executável e recursos | Testes de fontes, inferência, pacote e autoteste do executável passaram; teste físico pendente |
-| Linux ARM64 | TAR.GZ com executável e recursos | Testes de fontes, inferência, pacote e autoteste do executável passaram; teste físico pendente |
+| Windows x64 | EXE portátil e instalador por usuário | Compilação e autotestes da beta passaram; teste físico da atualização pendente |
+| Mac Apple Silicon | APP dentro de DMG | OpenCV enxuto, inferência e autoteste do APP da beta passaram; teste físico desta compilação pendente |
+| Mac Intel x86_64 | APP dentro de DMG | Colisão na receita nativa identificada; correção em teste; não bloqueia os demais pacotes |
+| Linux x86_64 | TAR.GZ com executável e recursos | OpenCV/NumPy enxutos e inferência passaram; investigação da amostra de rede bloqueou o empacotamento |
+| Linux ARM64 | TAR.GZ com executável e recursos | OpenCV/NumPy enxutos e inferência passaram; investigação da amostra de rede bloqueou o empacotamento |
 
 O estado será atualizado com resultados reais e links das execuções. Check verde
 de CI não certifica câmera, chamada ou desempenho em todos os computadores.
@@ -129,3 +129,21 @@ oficial do domínio de visão (`mediapipe_tasks_vision_lib`), suficiente para as
 APIs usadas pelo app. Ela evita áudio/texto/busca e aplica o controle de símbolos
 do próprio fornecedor. A compilação antiga será cancelada para testar os insumos
 atuais; isso não constitui aprovação nem reprovação do novo candidato Intel.
+
+## Rodada da beta — foco na entrega
+
+[Execução da beta](https://github.com/arantes-gabs/fora-de-cena/actions/runs/40614201662).
+Windows e Apple Silicon passaram. Linux compilou os dois componentes enxutos e
+executou os modelos; a amostra registrou syscalls, sem capturar payload, e parou
+a etapa seguinte. Foi identificado que o import opcional de sounddevice
+inicializa PortAudio, embora o app não use áudio e o empacotador já o exclua.
+O adaptador de visão agora recusa esse import opcional durante a inicialização;
+o próximo teste compara com um controle de importação do backend no runner limpo.
+Isso ainda não é evidência de ausência geral de telemetria.
+
+Intel falhou no conflito de nomes entre a biblioteca macOS e seu genrule de
+cópia. A receita corrige esse conflito e permite três compilações CMake paralelas.
+
+Prioridade da beta: Mac Apple Silicon e Linux x64/ARM64. Intel pode permanecer
+experimental separado. Otimizações adicionais e matrizes amplas de versões de
+SO ficam para acompanhamento; não bloqueiam pacotes aprovados de outros alvos.
