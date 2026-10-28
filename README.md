@@ -1,28 +1,27 @@
 # Fora de Cena
 
-> **Candidata 0.5.0-beta.1.** Mac e Linux estão em validação experimental.
-> Os downloads publicados continuam sendo a versão Windows 0.4.0.
-> Os fontes desta branch preparam a candidata **0.5.0-beta.1**, ainda sem lançamento.
-> Veja o [estado dos testes e critérios de lançamento](MULTIPLATAFORMA.md).
+> **Disponível: beta 0.5.0-beta.1 para Mac Apple Silicon (M1 em diante, macOS 15+).**
+> Windows continua na versão 0.4.0. Linux e Mac Intel permanecem em testes, sem download público nesta beta.
 
 ![Fora de Cena — saídas criativas para suas chamadas](assets/brand/readme-cover.png)
 
 Desapareça da webcam com um gesto e reapareça quando quiser. Teleporte, fumaça,
 poeira, pixels, saída de desenho e portal para suas chamadas de vídeo.
 
-**Windows x64 · Processamento local · Sem áudio · Sem APIs pagas**
+**Windows x64 · Mac Apple Silicon (beta) · Imagens processadas no dispositivo · Sem áudio**
 
-[Baixar versão 0.4.0](https://github.com/arantes-gabs/fora-de-cena/releases/tag/v0.4.0) ·
+[Baixar Windows 0.4.0](https://github.com/arantes-gabs/fora-de-cena/releases/tag/v0.4.0) ·
 [Como usar](COMO_USAR.md) · [Privacidade](PRIVACY.md)
 
-> **Versão pública inicial · 0.4.0.** Disponível para avaliação no Windows.
-> Teste a prévia antes de usar em uma reunião importante.
+## Mac Apple Silicon — beta
 
-**Mac e Linux:** adaptação experimental em desenvolvimento, com instruções e
-receitas de build em [Mac e Linux](MAC_LINUX.md). Os downloads acima continuam
-sendo Windows; ainda não há pacote nativo aprovado para publicar.
+[**Baixar aplicativo para Mac (DMG)**](https://github.com/arantes-gabs/fora-de-cena/releases/download/v0.5.0-beta.1/ForaDeCena-0.5.0-beta.1-macos-arm64-experimental.dmg) · [Instruções para Mac](MAC_APPLE_SILICON.md) · [Notas da beta](https://github.com/arantes-gabs/fora-de-cena/releases/tag/v0.5.0-beta.1)
 
-## Baixar e abrir
+Abra o DMG e arraste o app para Aplicativos. **Não precisa instalar Python.** A primeira abertura pode exigir **Ajustes do Sistema → Privacidade e Segurança → Abrir Mesmo Assim**, pois não há notarização Apple. Não desative as proteções do Mac. Para chamadas, é necessário preparar a câmera virtual do OBS; para só visualizar, não.
+
+Testes nativos e confirmação do proprietário em um M1; outras combinações ainda precisam de testes. Antes de usar, leia [Privacidade](PRIVACY.md): o MediaPipe declara métricas e sua atividade de rede segue em investigação. Não anunciamos funcionamento totalmente sem rede. Beta experimental, `distribution_ready=false`.
+
+## Windows — baixar e abrir
 
 Escolha uma opção abaixo. As duas incluem o aplicativo completo:
 

@@ -1,15 +1,17 @@
+> **Atualização de 28/10/2026:** beta pública somente Apple Silicon. [Download e instalação](MAC_APPLE_SILICON.md). As seções cronológicas abaixo preservam resultados das tentativas anteriores; não são anúncio de downloads Linux/Intel. A verificação ampla de rede continua pendente.
+
 # Mac e Linux — acompanhamento dos testes
 
 Esta branch (`testing/mac-linux`) contém trabalho experimental. Os downloads
-publicados em `v0.4.0` continuam sendo os pacotes Windows existentes. Não há
-anúncio de suporte nativo aprovado para Mac/Linux nem nova tag de versão.
+publicados em `v0.4.0` continuam sendo os pacotes Windows existentes. A beta 0.5.0-beta.1 é publicada somente para Apple Silicon;
+Linux e Intel continuam em testes, sem download público nesta Release.
 
 ## Matriz de validação
 
 | Alvo | Saída prevista | Estado da candidata 0.5.0-beta.1 |
 | --- | --- | --- |
 | Windows x64 | EXE portátil e instalador por usuário | Compilação e autotestes da beta passaram; teste físico da atualização pendente |
-| Mac Apple Silicon | APP dentro de DMG | OpenCV enxuto, inferência e autoteste do APP da beta passaram; teste físico desta compilação pendente |
+| Mac Apple Silicon | APP dentro de DMG | Beta publicada: build/autoteste passaram; proprietário confirmou funcionamento no M1 em 28/10/2026; escopo específico e macOS não informados |
 | Mac Intel x86_64 | APP dentro de DMG | Colisão na receita nativa identificada; correção em teste; não bloqueia os demais pacotes |
 | Linux x86_64 | TAR.GZ com executável e recursos | OpenCV/NumPy enxutos, inferência, compilação e autoteste passaram; beta experimental, teste físico pendente |
 | Linux ARM64 | TAR.GZ com executável e recursos | OpenCV/NumPy enxutos, inferência, compilação e autoteste passaram; beta experimental, teste físico pendente |

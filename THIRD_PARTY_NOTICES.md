@@ -1,7 +1,7 @@
 # Licenças e componentes — Fora de Cena
 
 O documento preserva a análise da versão Windows 0.4.0 e identifica abaixo as
-alterações da candidata 0.5.0-beta.1. Os novos candidatos não estão liberados.
+alterações da candidata 0.5.0-beta.1. A beta pública é limitada ao pacote Apple Silicon; os demais alvos continuam em testes.
 
 ## Dois programas independentes
 
@@ -189,3 +189,11 @@ O inventário da beta Linux identificou Tcl/Tk 8.6. Os textos oficiais de licen�
 8.6.12 foram incluídos separadamente em `packaging/notices`, além dos avisos 9.x
 usados nas outras receitas. Os pacotes gerados para download devem preservar
 esses textos; não se presume que todos os sistemas usem o mesmo Tcl/Tk.
+
+## Revisão do escopo publicado — Apple Silicon, 28/10/2026
+
+O lançamento usa o DMG do commit b80b504, sem reconstrução ou alteração dos binários testados. O perfil OpenCV mínimo documentado no candidato tem FFmpeg, GStreamer e GUI externa desligados. O inventário nativo e os autotestes passaram no CI; assinatura ad hoc verificada. Isso não é Developer ID ou notarização.
+
+Os 256 arquivos do manifesto dos fontes correspondentes da saída tiveram seus SHA-256 conferidos; os ZIPs de fontes e avisos passaram na verificação de integridade. Fontes do app, fontes do auxiliar e avisos são oferecidos na mesma Release e com o mesmo acesso do DMG. Avisos preservados por cautela podem citar componentes não incluídos nos binários. A revisão documental deste escopo não é certificação jurídica geral.
+
+A atividade de rede MediaPipe continua pendente e declarada em PRIVACY.md e nas notas; a beta não afirma ausência de telemetria da dependência. `distribution_ready=false` é preservado nos relatórios originais. Outras plataformas e modificações futuras exigem revisão própria.
