@@ -1,6 +1,6 @@
 # Fora de Cena
 
-> **Beta 0.5.0-beta.1: Mac Apple Silicon e Linux x64/ARM64.**
+> **Downloads: Mac Apple Silicon 0.5.0-beta.1 · Linux 0.5.0-beta.2 experimental.**
 > Windows continua na 0.4.0. Linux não foi testado em máquina real e pode apresentar bugs. Mac Intel segue em desenvolvimento, sem download.
 
 ![Fora de Cena — saídas criativas para suas chamadas](assets/brand/readme-cover.png)
@@ -23,16 +23,16 @@ Testes nativos e confirmação do proprietário em um M1; outras combinações a
 
 ## Linux — beta para testes
 
-**Problema conhecido no Linux beta.1:** houve falha de abertura confirmada ao carregar as ilustrações (`PIL._tkinter_finder` ausente). A correção 0.5.0-beta.2 está em preparação e ainda não foi publicada. Os downloads Mac/Windows não são substituídos por essa correção.
+**Atualização beta.2:** corrige a falha de abertura da beta.1 causada por `PIL._tkinter_finder` ausente. O executável passou no novo teste gráfico das sete imagens. Ainda precisa de testes em máquinas reais. [Notas e downloads](https://github.com/arantes-gabs/fora-de-cena/releases/tag/v0.5.0-beta.2).
 
 
 **Ainda não testada em uma máquina Linux real por um usuário; pode apresentar bugs.** Os testes automatizados e autotestes dos executáveis passaram, mas câmera, chamadas e desempenho reais ainda precisam de validação.
 
-[**Baixar Linux x64 (Intel/AMD)**](https://github.com/arantes-gabs/fora-de-cena/releases/download/v0.5.0-beta.1/ForaDeCena-0.5.0-beta.1-linux-x86_64-experimental.tar.gz) · [**Baixar Linux ARM64**](https://github.com/arantes-gabs/fora-de-cena/releases/download/v0.5.0-beta.1/ForaDeCena-0.5.0-beta.1-linux-arm64-experimental.tar.gz) · [Como abrir e testar](LINUX.md)
+[**Baixar Linux x64 (Intel/AMD)**](https://github.com/arantes-gabs/fora-de-cena/releases/download/v0.5.0-beta.2/ForaDeCena-0.5.0-beta.2-linux-x86_64-experimental.tar.gz) · [**Baixar Linux ARM64**](https://github.com/arantes-gabs/fora-de-cena/releases/download/v0.5.0-beta.2/ForaDeCena-0.5.0-beta.2-linux-arm64-experimental.tar.gz) · [Como abrir e testar](LINUX.md)
 
 Extraia e execute `ForaDeCena` dentro da pasta, mantendo os recursos juntos. Não precisa de Python nem sudo. A saída para chamadas exige v4l2loopback configurado no sistema; a prévia funciona sem esse driver. Base Ubuntu 22.04/glibc 2.35; não é um pacote universal para todas as distribuições.
 
-[**Relatar erro ou resultado do teste → GitHub Issues**](https://github.com/arantes-gabs/fora-de-cena/issues/new/choose). Relatos são públicos: remova dados pessoais, credenciais e caminhos privados dos logs. Fontes, avisos e `Linux-SHA256SUMS.txt` acompanham os downloads na Release.
+[**Relatar erro ou resultado do teste → GitHub Issues**](https://github.com/arantes-gabs/fora-de-cena/issues/new/choose). Relatos são públicos: remova dados pessoais, credenciais e caminhos privados dos logs. Fontes, avisos e `SHA256SUMS.txt` acompanham os downloads na Release.
 
 ## Windows — baixar e abrir
 

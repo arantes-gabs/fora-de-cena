@@ -1,15 +1,15 @@
-# Linux — beta experimental 0.5.0-beta.1
-
-**Problema conhecido no Linux beta.1:** houve falha de abertura confirmada ao carregar as ilustrações (`PIL._tkinter_finder` ausente). A correção 0.5.0-beta.2 está em preparação e ainda não foi publicada. Os downloads Mac/Windows não são substituídos por essa correção.
+# Linux — beta experimental 0.5.0-beta.2
 
 **Não foi testada em uma máquina Linux real por um usuário. Pode apresentar bugs, falhas de câmera ou incompatibilidades.** Compilação nativa, testes automatizados, inferência sintética e autotestes dos pacotes passaram nos runners Linux do GitHub. Isso não certifica webcam, desempenho, saída virtual ou chamadas reais.
+
+A beta.2 corrige o módulo Pillow/Tk ausente na beta.1 e passou no teste gráfico do executável. **Extraia em uma pasta nova, sem misturar com a versão anterior.**
 
 ## Qual arquivo baixar
 
 | Computador | Arquivo |
 | --- | --- |
-| PC Intel/AMD de 64 bits, `uname -m` mostra `x86_64` | [Linux x64 — TAR.GZ](https://github.com/arantes-gabs/fora-de-cena/releases/download/v0.5.0-beta.1/ForaDeCena-0.5.0-beta.1-linux-x86_64-experimental.tar.gz) |
-| Linux ARM64, `uname -m` mostra `aarch64` ou `arm64` | [Linux ARM64 — TAR.GZ](https://github.com/arantes-gabs/fora-de-cena/releases/download/v0.5.0-beta.1/ForaDeCena-0.5.0-beta.1-linux-arm64-experimental.tar.gz) |
+| PC Intel/AMD de 64 bits, `uname -m` mostra `x86_64` | [Linux x64 — TAR.GZ](https://github.com/arantes-gabs/fora-de-cena/releases/download/v0.5.0-beta.2/ForaDeCena-0.5.0-beta.2-linux-x86_64-experimental.tar.gz) |
+| Linux ARM64, `uname -m` mostra `aarch64` ou `arm64` | [Linux ARM64 — TAR.GZ](https://github.com/arantes-gabs/fora-de-cena/releases/download/v0.5.0-beta.2/ForaDeCena-0.5.0-beta.2-linux-arm64-experimental.tar.gz) |
 
 Base de build Ubuntu 22.04, glibc 2.35, ambiente gráfico. Outras distribuições e versões ainda não estão validadas. Não há pacote para 32 bits ou Alpine/musl. As bibliotecas gráficas do sistema podem precisar ser instaladas pelo gerenciador da distribuição. Não existe promessa de pacote universal para todo Linux.
 
@@ -38,6 +38,6 @@ Informe distribuição/versão, arquitetura, versão do app, X11/Wayland se soub
 
 ## Integridade e privacidade
 
-[Linux-SHA256SUMS.txt](https://github.com/arantes-gabs/fora-de-cena/releases/download/v0.5.0-beta.1/Linux-SHA256SUMS.txt) contém os hashes dos dois pacotes e dos respectivos ZIPs de fontes/licenças. Na pasta dos downloads, `sha256sum NOME_DO_ARQUIVO.tar.gz` permite conferir o arquivo escolhido. O checksum não é certificação de segurança.
+[SHA256SUMS.txt](https://github.com/arantes-gabs/fora-de-cena/releases/download/v0.5.0-beta.2/SHA256SUMS.txt) contém os hashes dos dois pacotes e dos respectivos ZIPs de fontes/licenças. Na pasta dos downloads, `sha256sum NOME_DO_ARQUIVO.tar.gz` permite conferir o arquivo escolhido. O checksum não é certificação de segurança.
 
 As imagens são processadas no dispositivo. O MediaPipe declara métricas; tentativas HTTPS foram observadas em uma amostra sintética, sem captura do conteúdo. A origem exata e sessões longas continuam em investigação. Leia [PRIVACY.md](PRIVACY.md) antes de usar. A beta não é certificada como totalmente sem rede. `distribution_ready=false` e `dependency_network_verified=false` permanecem.

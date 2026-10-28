@@ -1,3 +1,5 @@
+> **Beta Linux atual: 0.5.0-beta.2.** Corrige a falha de carregamento Pillow/Tk da beta.1. Os dois executáveis passaram nos testes automáticos e renderizaram as sete imagens de ajuda em Xvfb. Testes de webcam/chamada em máquina real ainda pendentes. [Instalação e relatos](LINUX.md). As seções abaixo preservam o histórico das tentativas anteriores; não são atualização de todos os alvos para beta.2.
+
 > **Atualização de 28/10/2026:** beta pública Apple Silicon e Linux x64/ARM64. [Download e instalação](MAC_APPLE_SILICON.md). As seções cronológicas abaixo preservam resultados das tentativas anteriores; não são certificação de uso real Linux nem anúncio de download Intel. A verificação ampla de rede continua pendente.
 
 # Mac e Linux — acompanhamento dos testes
