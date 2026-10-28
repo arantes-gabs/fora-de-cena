@@ -36,6 +36,8 @@ def runtime_signature(root: Path = ROOT) -> str:
                      'packaging/opencv-minimal-source.patch'):
         if (root / relative).is_file():
             paths.append(root / relative)
+    paths.append(root / 'requirements-intel.lock.txt')
+    paths += list((root / 'packaging/notices/opencv-zoo').glob('*'))
     for relative in ('tools/build_mediapipe_intel.py', 'tools/mediapipe_intel.py',
                      'packaging/mediapipe-intel-profile.json', 'packaging/mediapipe-intel-source.patch'):
         if (root / relative).is_file():
@@ -77,6 +79,22 @@ def upstream_files() -> list[tuple[Path, str]]:
 
 
 def prepare_model_notices(destination: Path) -> None:
+    from teleport_cam.vision_backend import vision_backend
+    if vision_backend() == 'opencv-dnn':
+        import shutil
+        from teleport_cam.opencv_models import COMMIT, MODEL_ASSETS as assets
+        rows = ['# Modelos OpenCV Zoo (Mac Intel)', '', f'Commit oficial: {COMMIT}', '',
+                'Palm/Hand/PPHumanSeg: Apache-2.0. YuNet: MIT.',
+                'Modelos sem alterações; adaptação de pré/pós-processamento própria.', '']
+        for name, (url, checksum) in assets.items():
+            rows += [f'## {name}', f'Origem: {url}', f'SHA256: {checksum}', '']
+        (destination / 'MODELS.md').write_text('\n'.join(rows), encoding='utf-8')
+        notice_folder = ROOT / 'packaging/notices/opencv-zoo'
+        shutil.copytree(notice_folder, destination / 'opencv-zoo')
+        shutil.copyfile(notice_folder / 'APACHE-2.0.txt', destination / 'APACHE-2.0.txt')
+        # The independent output tool still needs its original libyuv notices below.
+        prepare_libyuv_notices(destination)
+        return
     from teleport_cam.model_assets import MODEL_ASSETS
     rows = ['# Modelos MediaPipe', '',
             'Google LLC. Licença: Apache-2.0. Cópias sem alteração, hashes fixados no aplicativo.',
@@ -90,6 +108,10 @@ def prepare_model_notices(destination: Path) -> None:
         rows.extend([f'## {name}', f'Modelo: {model_url}', f'SHA256: {checksum}',
                      f'Ficha: {url}', f'SHA256 da ficha: {sha256(evidence)}', ''])
     (destination / 'MODELS.md').write_text('\n'.join(rows), encoding='utf-8')
+    prepare_libyuv_notices(destination)
+
+
+def prepare_libyuv_notices(destination: Path) -> None:
     source = ROOT / 'work' / 'vendor' / 'pyvirtualcam-0.15.0' / 'external' / 'libyuv'
     for name in ('LICENSE', 'PATENTS', 'AUTHORS'):
         path = source / name

@@ -1,0 +1,15 @@
+# Mac Intel only: same UI/output versions; no MediaPipe or optional audio stack.
+customtkinter==6.0.0
+cv2_enumerate_cameras==1.4.0
+darkdetect==0.8.0
+numpy==2.5.4
+opencv-contrib-python==4.14.0.94
+packaging==26.3
+pillow==13.0.0
+pyvirtualcam==0.15.0
+pyobjc-core==12.2.2; sys_platform == 'darwin'
+pyobjc-framework-AVFoundation==12.2.2; sys_platform == 'darwin'
+pyobjc-framework-Cocoa==12.2.2; sys_platform == 'darwin'
+pyobjc-framework-CoreAudio==12.2.2; sys_platform == 'darwin'
+pyobjc-framework-CoreMedia==12.2.2; sys_platform == 'darwin'
+pyobjc-framework-Quartz==12.2.2; sys_platform == 'darwin'

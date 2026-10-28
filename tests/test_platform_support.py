@@ -218,7 +218,7 @@ class NativePackageTests(unittest.TestCase):
         self.assertFalse(report['ok'])
         self.assertIn('dependency not pinned', report['errors'][0])
 
-    def test_native_targets_and_intel_require_explicit_custom_mediapipe(self):
+    def test_native_targets_and_intel_require_explicit_custom_opencv(self):
         self.assertEqual(native_target('darwin', 'arm64'), 'macos-arm64')
         self.assertEqual(native_target('darwin', 'x86_64'), 'macos-x86_64')
         self.assertEqual(native_target('linux', 'x86_64'), 'linux-x86_64')
@@ -228,7 +228,8 @@ class NativePackageTests(unittest.TestCase):
                 self.assertRaisesRegex(ValueError, 'explicitly built/validated'):
             build()
         self.assertFalse(build_plan('macos-arm64')['distribution_ready'])
-        self.assertTrue(build_plan('macos-x86_64')['custom_mediapipe_required'])
+        self.assertFalse(build_plan('macos-x86_64')['custom_mediapipe_required'])
+        self.assertEqual(build_plan('macos-x86_64')['vision_backend'], 'opencv-dnn')
 
     def test_archives_do_not_include_the_build_user_name_and_keep_executable_permissions(self):
         with tempfile.TemporaryDirectory() as folder:

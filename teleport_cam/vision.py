@@ -4,10 +4,12 @@ from pathlib import Path
 import hashlib
 import cv2
 from .runtime_imports import without_optional_audio
-with without_optional_audio():
-    import mediapipe as mp
-    from mediapipe.tasks import python
-    from mediapipe.tasks.python import vision
+from .vision_backend import vision_backend
+if vision_backend() != 'opencv-dnn':
+    with without_optional_audio():
+        import mediapipe as mp
+        from mediapipe.tasks import python
+        from mediapipe.tasks.python import vision
 from .gesture import Face, Point
 from .recognition import GestureRecognizer
 from .scene import Frame
@@ -98,3 +100,8 @@ class Segmenter:
 
     def close(self) -> None:
         self.task.close()
+
+
+# Keep the existing runtime/API on supported platforms; Intel replaces only this adapter.
+if vision_backend() == 'opencv-dnn':
+    from .vision_opencv import Detector, Segmenter

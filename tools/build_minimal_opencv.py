@@ -1,4 +1,4 @@
-"""Build reviewed Mac ARM64/Linux wheels in a separate pinned venv. No uploads."""
+"""Build reviewed native Mac/Linux OpenCV wheels in a pinned venv. No uploads."""
 from pathlib import Path
 from importlib import metadata
 import argparse
@@ -72,7 +72,7 @@ def main():
         OPENCV_PYTHON_SKIP_GIT_COMMANDS='1',
         PATH=str(Path(sys.executable).parent)+':/usr/bin:/bin:/usr/sbin:/sbin',
         TMPDIR=str(ROOT/'work/test-temp'),PIP_DISABLE_PIP_VERSION_CHECK='1')
-    if target=='macos-arm64':
+    if target.startswith('macos-'):
         environment['MACOSX_DEPLOYMENT_TARGET']='15.0'
     else:
         environment.pop('MACOSX_DEPLOYMENT_TARGET',None)

@@ -76,12 +76,11 @@ def build() -> None:
             output.write(license_bytes)
         command = [sys.executable, 'tools/build_unix.py', '--python-license', str(license_path)]
         if sys.platform in ('darwin', 'linux'):
-            intel = sys.platform == 'darwin' and platform.machine().lower() == 'x86_64'
-            folder = 'mediapipe-intel' if intel else 'opencv-minimal'
+            folder = 'opencv-minimal'
             wheels = list((ROOT / 'work' / folder / 'wheels').glob('*.whl'))
             if len(wheels) != 1:
                 raise ValueError('Expected one explicit custom wheel for the native target')
-            prefix = '--mediapipe' if intel else '--opencv'
+            prefix = '--opencv'
             command += [prefix + '-wheel', str(wheels[0]), prefix + '-provenance',
                         str(ROOT / 'work' / folder / 'provenance.json')]
         if sys.platform=='linux':
@@ -106,10 +105,14 @@ def summarize(target: str) -> None:
     else:
         state = 'Dependency check did not complete; inspect failed steps'
     if target == 'macos-x86_64':
-        state += '. Official Intel wheel is unavailable; see the optional custom source-build steps. No support certification.'
+        selected_backend = report.get('vision_backend') if wheels_path.is_file() else None
+        state += ('. Intel OpenCV DNN profile selected; complete app/camera validation is still required.'
+                  if selected_backend == 'opencv-dnn' else
+                  '. Legacy MediaPipe wheel check; it does not certify the Intel OpenCV DNN candidate.')
+        state += ' No support certification.'
         diagnostic = ROOT / 'work/intel-source-self-test.json'
         if diagnostic.is_file() and json.loads(diagnostic.read_text(encoding='utf-8')).get('ok'):
-            state += ' Custom Intel source inference/self-test passed; inspect the separate DMG/frozen test outcome.'
+            state += ' Intel source inference/self-test passed; inspect the separate DMG/frozen test outcome.'
     network=ROOT/'work/dependency-network-sample.json'
     if network.is_file():
         observed=json.loads(network.read_text(encoding='utf-8')).get('sample_network_syscalls_observed')

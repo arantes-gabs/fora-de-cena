@@ -15,16 +15,20 @@ class GuiDiagnosticTests(unittest.TestCase):
         return {'ok': True, 'frozen': True, 'version': __version__, 'guide_images_rendered': 7,
                 'camera_opened': False, 'meet_bridge_opened': False}
 
-    def run_report(self, report, returncode=0):
+    def run_report(self, report, returncode=0, system='linux'):
         with tempfile.TemporaryDirectory() as directory:
             folder = Path(directory)
             def execute(command, **kwargs):
-                self.assertEqual(command[0], '/usr/bin/xvfb-run')
+                if system == 'linux':
+                    self.assertEqual(command[0], '/usr/bin/xvfb-run')
+                else:
+                    self.assertEqual(command[0], str(folder / 'ForaDeCena'))
                 self.assertIn('--gui-self-test', command)
                 self.assertNotIn('GH_TOKEN', kwargs['env'])
                 Path(command[-1]).write_text(json.dumps(report), encoding='utf-8')
                 return Mock(returncode=returncode)
-            with patch('tools.build_unix.system_environment', return_value={}), \
+            with patch('tools.build_unix.sys.platform', system), \
+                    patch('tools.build_unix.system_environment', return_value={}), \
                     patch('tools.build_unix.subprocess.run', side_effect=execute):
                 return run_gui_diagnostic(folder / 'ForaDeCena', folder)
 
@@ -43,6 +47,9 @@ class GuiDiagnosticTests(unittest.TestCase):
                 self.run_report(report)
         with self.assertRaises(RuntimeError):
             self.run_report(self.report(), returncode=1)
+
+    def test_mac_gui_check_runs_the_executable_without_linux_xvfb(self):
+        self.assertTrue(self.run_report(self.report(), system='darwin')['ok'])
 
     def test_linux_startup_error_is_visible_without_echoing_private_details(self):
         from teleport_cam.launcher import main

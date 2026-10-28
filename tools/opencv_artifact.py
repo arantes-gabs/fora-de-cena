@@ -16,8 +16,11 @@ def digest(path):
 
 
 def used_symbols(root=ROOT):
+    from teleport_cam.vision_backend import vision_backend
     symbols=set()
     for path in (root/'teleport_cam').glob('*.py'):
+        if path.name == 'vision_opencv.py' and vision_backend() != 'opencv-dnn':
+            continue
         for node in ast.walk(ast.parse(path.read_text(encoding='utf-8'))):
             if isinstance(node,ast.Attribute) and isinstance(node.value,ast.Name) and node.value.id=='cv2':
                 symbols.add(node.attr)
@@ -69,6 +72,10 @@ def validate_artifact(wheel: Path, provenance: Path):
     target=native_target()
     if record.get('native_target', 'macos-arm64')!=target:
         raise ValueError('Selected OpenCV wheel belongs to a different native target')
+    from tools.opencv_profile import cmake_profile
+    expected_flags = cmake_profile(profile, target)
+    if any(record.get('cmake', {}).get(key) != value for key, value in expected_flags.items()):
+        raise ValueError('Selected OpenCV build flags differ from the native target profile')
     distribution=metadata.distribution('opencv-contrib-python')
     if distribution.version!=record['source']['version']:
         raise ValueError('Installed OpenCV version differs from selected source')

@@ -8,6 +8,9 @@ from PyInstaller.utils.hooks import collect_data_files, collect_dynamic_libs
 
 root = Path(SPECPATH).parent
 from teleport_cam import __version__, __windows_version__
+from teleport_cam.vision_backend import vision_backend
+from teleport_cam.model_assets import active_model_assets
+intel_dnn = vision_backend() == 'opencv-dnn'
 if sys.platform not in ('darwin', 'linux'):
     raise RuntimeError('Run this recipe on macOS or Linux.')
 work = Path(os.environ['FDC_UNIX_WORK']).resolve()
@@ -24,15 +27,18 @@ for name in ('manifest.json', 'package.json', 'background.js', 'heartbeat.js', '
     datas.append((str(root / 'meet_extension' / name), 'meet_extension'))
 for name in ('LICENSE', 'THIRD_PARTY_NOTICES.md', 'PRIVACY.md', 'GUIA_RAPIDO.html', 'MAC_LINUX.md', 'MAC_INTEL.md', 'OPENCV_ENXUTO_MAC.md'):
     datas.append((str(root / name), '.'))
-for name in ('hand_landmarker.task', 'face_detector.tflite', 'selfie_segmenter_landscape.tflite'):
+for name in active_model_assets():
     datas.append((str(root / 'models' / name), 'models'))
-datas += collect_data_files('customtkinter') + collect_data_files('mediapipe')
+datas += collect_data_files('customtkinter')
+if not intel_dnn:
+    datas += collect_data_files('mediapipe')
 a = Analysis([str(root / 'main.py')], pathex=[str(root)],
-    binaries=collect_dynamic_libs('mediapipe'), datas=datas,
+    binaries=[] if intel_dnn else collect_dynamic_libs('mediapipe'), datas=datas,
     # Pillow's native Tk bridge imports the finder dynamically on Linux.
-    hiddenimports=['mediapipe.tasks.c', 'PIL._tkinter_finder', 'PIL._imagingtk'],
+    hiddenimports=['PIL._tkinter_finder', 'PIL._imagingtk'] + ([] if intel_dnn else ['mediapipe.tasks.c']),
     hooksconfig={'matplotlib': {'backends': ['Agg']}},
-    excludes=['IPython', 'jupyter', 'pytest', 'readline', 'sounddevice', 'pyvirtualcam', 'camera_output'], noarchive=False)
+    excludes=['IPython', 'jupyter', 'pytest', 'readline', 'sounddevice', 'pyvirtualcam', 'camera_output']
+             + (['mediapipe'] if intel_dnn else ['teleport_cam.vision_opencv']), noarchive=False)
 a.datas = [entry for entry in a.datas if Path(entry[0]).name != 'direct_url.json']
 # Unix OpenCV may link FFmpeg directly: do not remove its libraries and break loading.
 # The native codec/GUI libraries still need a corresponding-source/license review.

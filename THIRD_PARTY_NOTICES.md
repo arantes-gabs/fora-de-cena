@@ -1,7 +1,7 @@
 # Licenças e componentes — Fora de Cena
 
 O documento preserva a análise da versão Windows 0.4.0 e identifica abaixo as
-alterações da candidata 0.5.0-beta.1. A beta pública inclui Apple Silicon e Linux x64/ARM64; Intel continua em testes.
+alterações da candidata 0.5.0-beta.1. Os novos candidatos não estão liberados.
 
 ## Dois programas independentes
 
@@ -190,14 +190,14 @@ O inventário da beta Linux identificou Tcl/Tk 8.6. Os textos oficiais de licen�
 usados nas outras receitas. Os pacotes gerados para download devem preservar
 esses textos; não se presume que todos os sistemas usem o mesmo Tcl/Tk.
 
-## Revisão do escopo publicado — Apple Silicon, 28/10/2026
+## Experimento Mac Intel com OpenCV DNN
 
-O lançamento usa o DMG do commit b80b504, sem reconstrução ou alteração dos binários testados. O perfil OpenCV mínimo documentado no candidato tem FFmpeg, GStreamer e GUI externa desligados. O inventário nativo e os autotestes passaram no CI; assinatura ad hoc verificada. Isso não é Developer ID ou notarização.
-
-Os 256 arquivos do manifesto dos fontes correspondentes da saída tiveram seus SHA-256 conferidos; os ZIPs de fontes e avisos passaram na verificação de integridade. Fontes do app, fontes do auxiliar e avisos são oferecidos na mesma Release e com o mesmo acesso do DMG. Avisos preservados por cautela podem citar componentes não incluídos nos binários. A revisão documental deste escopo não é certificação jurídica geral.
-
-A atividade de rede MediaPipe continua pendente e declarada em PRIVACY.md e nas notas; a beta não afirma ausência de telemetria da dependência. `distribution_ready=false` é preservado nos relatórios originais. Outras plataformas e modificações futuras exigem revisão própria.
-
-## Publicação beta Linux — 28/10/2026
-
-São publicados os pacotes Linux x64/ARM64 já produzidos no commit b80b504 e aprovados nos autotestes nativos. Não há teste em máquina real confirmado. Os builds usam OpenCV mínimo e NumPy próprio sem BLAS/Fortran externos, conforme as proveniências e barreiras de bibliotecas do CI. Cada arquitetura acompanha seus ZIPs de avisos e fontes correspondentes do auxiliar de saída GPL-2.0-only, com hashes conferidos contra os assets do rascunho. Não se reutiliza o ZIP de outra arquitetura para representar seu inventário nativo. `Linux-SHA256SUMS.txt` cobre os seis arquivos adicionados. As pendências de rede e testes físicos permanecem explícitas; não é certificação jurídica ou de compatibilidade geral.
+O perfil Intel em preparação usa quatro modelos ONNX do OpenCV Zoo, fixados
+no commit `48b10fa505aeb51fbd127fc60a5c660040e823b7`. Palm/Hand/PPHumanSeg usam
+Apache-2.0; YuNet usa MIT. Os avisos completos e a proveniência estão em
+`packaging/notices/opencv-zoo/`; URLs e hashes em `teleport_cam/opencv_models.py`.
+O adaptador usa OpenCV DNN em CPU; não requer ONNX Runtime nem MediaPipe nesse perfil.
+Windows, Apple Silicon e Linux mantêm seus perfis anteriores. O OpenCV Intel
+deve incluir DNN/objdetect e preservar os avisos transitivos coletados no build.
+O teste dos modelos Intel passou; pacote completo e câmera Intel ainda pendentes.
+`distribution_ready=false` e a pendência geral de rede continuam declarados.

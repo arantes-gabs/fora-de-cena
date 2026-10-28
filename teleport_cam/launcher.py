@@ -19,7 +19,8 @@ def self_test() -> dict[str, object]:
     from .app import App
     from .vision import Detector, Segmenter
     from .gesture_guides import GUIDES
-    from .model_assets import MODEL_ASSETS
+    from .model_assets import active_model_assets
+    from .vision_backend import vision_backend
     from .effects import AnimeTeleportEffect, Silhouette
     from .tk_resources import verify_tk_data
     from setup_models import verify_model
@@ -34,7 +35,7 @@ def self_test() -> dict[str, object]:
     for name in ('Roboto-Regular.ttf', 'Roboto-Medium.ttf'):
         ImageFont.truetype(str(font_root / 'Roboto' / name), 12)
     tk_data_layout = verify_tk_data(root) if getattr(sys, 'frozen', False) else 'development'
-    for name, (_, digest) in MODEL_ASSETS.items():
+    for name, (_, digest) in active_model_assets().items():
         verify_model(root / 'models' / name, digest)
     for name in {guide.image for guide in GUIDES.values()}:
         with Image.open(root / 'assets' / 'gestures' / name) as image:
@@ -50,6 +51,8 @@ def self_test() -> dict[str, object]:
     frame = np.zeros((240, 320, 3), dtype=np.uint8)
     detector = Detector(root / 'models')
     try:
+        if vision_backend() == 'opencv-dnn':
+            detector.validate_models()
         detector.detect(frame, 1.0, 'anime')
     finally:
         detector.close()
@@ -84,9 +87,12 @@ def self_test() -> dict[str, object]:
         output.close()
     if 'pyvirtualcam' in sys.modules:
         raise RuntimeError('PyVirtualCam carregado indevidamente no processo principal.')
+    if vision_backend() == 'opencv-dnn' and any(name == 'mediapipe' or name.startswith('mediapipe.') for name in sys.modules):
+        raise RuntimeError('MediaPipe carregado indevidamente no perfil Intel OpenCV DNN.')
     manifest_path = root / 'bundle-build.json'
     signature = json.loads(manifest_path.read_text(encoding='utf-8')).get('runtime_signature') if manifest_path.is_file() else None
     return {'ok': True, 'version': __version__, 'frozen': bool(getattr(sys, 'frozen', False)),
+            'vision_backend': vision_backend(),
             'runtime_signature': signature,
             'tcl_version': tcl_version,
             'tk_data_layout': tk_data_layout,

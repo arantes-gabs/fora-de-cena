@@ -18,6 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from teleport_cam import __version__, __windows_version__
 from teleport_cam.model_assets import MODEL_ASSETS
+from teleport_cam.vision_backend import vision_backend, requirements_file
 from setup_models import verify_model
 from tools.distribution_licenses import prepare_model_notices, package_compliance, upstream_files, runtime_signature
 from tools.build_diagnostics import public_error
@@ -52,7 +53,7 @@ def collect_notices(destination: Path, python_license: Path | None = None) -> di
     destination.mkdir(parents=True, exist_ok=True)
     (destination / 'MODELS.txt').unlink(missing_ok=True)  # Superseded pre-review note.
     versions: dict[str, str] = {}
-    for line in (ROOT / 'requirements.lock.txt').read_text().splitlines():
+    for line in (ROOT / requirements_file(vision_backend())).read_text().splitlines():
         if not line.strip() or line.startswith('#'):
             continue
         requirement = Requirement(line)
@@ -97,7 +98,7 @@ def collect_notices(destination: Path, python_license: Path | None = None) -> di
     (destination / 'ROBOTO.txt').write_text(
         'Roboto-Regular.ttf / Roboto-Medium.ttf\nCopyright 2011 Google Inc. All Rights Reserved.\n'
         'Licensed under the Apache License, Version 2.0.\n'
-        'License text: mediapipe/licenses/LICENSE (same Apache-2.0 terms).\n'
+        'License text: APACHE-2.0.txt for the Intel profile; mediapipe/licenses/LICENSE otherwise.\n'
         'Original copyright/license metadata is retained in both font files.\n', encoding='utf-8')
     prepare_model_notices(destination)
     return versions

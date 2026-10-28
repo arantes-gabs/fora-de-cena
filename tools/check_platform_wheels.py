@@ -16,6 +16,7 @@ from packaging.tags import Tag, compatible_tags, cpython_tags, mac_platforms
 from packaging.utils import canonicalize_name, parse_wheel_filename
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
 TARGETS = ('windows-x64', 'macos-arm64', 'macos-x86_64', 'linux-x86_64', 'linux-arm64')
 
 
@@ -49,8 +50,10 @@ def supported_tags(target: str) -> set[Tag]:
 
 
 def pinned_requirements(root: Path, environment: dict[str, str]) -> dict[str, Requirement]:
+    from teleport_cam.vision_backend import requirements_file, vision_backend
     result: dict[str, Requirement] = {}
-    for name in ('requirements.lock.txt', 'requirements-build.txt'):
+    backend = vision_backend(environment['sys_platform'], environment['platform_machine'])
+    for name in (requirements_file(backend), 'requirements-build.txt'):
         for line in (root / name).read_text(encoding='utf-8').splitlines():
             if not line.strip() or line.lstrip().startswith('#'):
                 continue
@@ -108,7 +111,9 @@ def check(target: str) -> dict[str, object]:
                 errors.append(name + ': dependency not pinned: ' + str(dependency))
             elif next(iter(pin.specifier)).version not in dependency.specifier:
                 errors.append(name + ': incompatible dependency pin: ' + str(dependency))
+    from teleport_cam.vision_backend import vision_backend
     return {'target': target, 'python': '3.14', 'ok': not errors,
+            'vision_backend': vision_backend(environment['sys_platform'], environment['platform_machine']),
             'native_runtime_tested': False, 'packages': rows, 'errors': errors}
 
 

@@ -77,6 +77,7 @@ class OpenCVArtifactTests(unittest.TestCase):
         from tools.opencv_profile import cmake_profile, native_target
         profile=json.loads((ROOT/'packaging/opencv-minimal-profile.json').read_text())
         for system,machine,target in [('darwin','arm64','macos-arm64'),
+                                      ('darwin','x86_64','macos-x86_64'),
                                       ('linux','x86_64','linux-x86_64'),
                                       ('linux','aarch64','linux-arm64')]:
             with self.subTest(target=target):
@@ -93,6 +94,14 @@ class OpenCVArtifactTests(unittest.TestCase):
                     self.assertEqual(flags['WITH_AVFOUNDATION'],'OFF')
                 else:
                     self.assertEqual(flags['WITH_AVFOUNDATION'],'ON')
+                    if machine == 'x86_64':
+                        self.assertEqual(flags['CMAKE_OSX_ARCHITECTURES'], 'x86_64')
+                        self.assertIn('dnn', flags['BUILD_LIST'].split(','))
+                        self.assertIn('objdetect', flags['BUILD_LIST'].split(','))
+                        self.assertEqual(flags['BUILD_PROTOBUF'], 'ON')
+                        self.assertEqual(flags['PROTOBUF_UPDATE_FILES'], 'OFF')
+                    else:
+                        self.assertNotIn('dnn', flags['BUILD_LIST'].split(','))
         with self.assertRaises(RuntimeError):
             native_target('win32','amd64')
 
@@ -108,6 +117,7 @@ class CompliancePackageTests(unittest.TestCase):
             'camera_output/worker.spec': b'worker recipe\n',
             'packaging/fora_de_cena.spec': b'app recipe\n',
             'requirements.lock.txt': b'locked\n',
+            'requirements-intel.lock.txt': b'intel locked\n',
             'packaging/notices/opencv-minimal/OpenCV.txt': b'notice A\r\n',
             'packaging/notices/opencv-minimal/libpng.txt': b'notice B\n',
         }

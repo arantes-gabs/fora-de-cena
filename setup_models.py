@@ -4,7 +4,8 @@ import json
 import urllib.request
 
 ROOT = Path(__file__).resolve().parent
-from teleport_cam.model_assets import MODEL_ASSETS
+from teleport_cam.model_assets import active_model_assets
+MODEL_ASSETS = active_model_assets()
 MAX_MODEL_BYTES = 32 * 1024 * 1024
 
 def verify_model(path: Path, expected: str) -> None:
@@ -21,7 +22,7 @@ def prepare(folder: Path) -> None:
             partial = target.with_suffix('.part')
             try:
                 with urllib.request.urlopen(url, timeout=60) as response:
-                    if not response.url.startswith('https://storage.googleapis.com/'):
+                    if response.url != url:
                         raise ValueError('Redirecionamento de modelo não permitido.')
                     with partial.open('wb') as output:
                         total=0

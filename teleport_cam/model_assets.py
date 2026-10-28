@@ -10,3 +10,14 @@ MODEL_ASSETS: dict[str, tuple[str, str]] = {
         'https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite',
         'b4578f35940bf5a1a655214a1cce5cab13eba73c1297cd78e1a04c2380b0152f'),
 }
+
+
+def active_model_assets(backend: str | None = None) -> dict[str, tuple[str, str]]:
+    from .vision_backend import vision_backend
+    backend = vision_backend() if backend is None else backend
+    if backend == 'opencv-dnn':
+        from .opencv_models import MODEL_ASSETS as opencv_assets
+        return opencv_assets
+    if backend != 'mediapipe':
+        raise ValueError('Backend de visão desconhecido.')
+    return MODEL_ASSETS

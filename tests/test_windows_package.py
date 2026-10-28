@@ -57,6 +57,9 @@ class WindowsPackageTests(unittest.TestCase):
                 self.assertFalse(list(destination.glob('*.tmp')))
 
     def test_model_bytes_support_unicode_paths_and_keep_pinned_hash_validation(self):
+        from teleport_cam.vision_backend import vision_backend
+        if vision_backend() != 'mediapipe':
+            self.skipTest('MediaPipe byte loader is not part of the Intel DNN profile')
         from teleport_cam.vision import model_options
         with tempfile.TemporaryDirectory() as folder:
             model_folder = Path(folder) / 'Usuário João' / 'modelos'

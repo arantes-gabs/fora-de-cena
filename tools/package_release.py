@@ -15,7 +15,7 @@ FILES = (
     'CONTRIBUTING.md', 'CHANGELOG.md', 'DESENVOLVIMENTO.md', 'DISTRIBUIR.md',
     'NOTAS_DA_VERSAO.md', 'MAC_LINUX.md', 'OPENCV_ENXUTO_MAC.md', 'main.py', 'setup_models.py', 'smoke_test.py',
     '.github/workflows/native-candidates.yml', '.github/workflows/release-candidates.yml',
-    'requirements.txt', 'requirements.lock.txt', 'requirements-build.txt',
+    'requirements.txt', 'requirements.lock.txt', 'requirements-intel.lock.txt', 'requirements-build.txt',
     'requirements-opencv-build.txt', 'requirements-numpy-build.txt', 'packaging/opencv-minimal-profile.json',
     'packaging/opencv-minimal-source.patch',
     'packaging/mediapipe-intel-profile.json', 'packaging/mediapipe-intel-source.patch', 'MAC_INTEL.md', 'MULTIPLATAFORMA.md',
