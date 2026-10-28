@@ -1,3 +1,5 @@
+> **Intel — v0.5.0-beta.2-intel.1:** beta publicada com OpenCV DNN, sem recompilar o DMG testado. Build/autotestes nativos e teste do proprietário em M1/Rosetta passaram; teste em Mac Intel físico ainda pendente. [Download e instalação](MAC_INTEL.md). As seções abaixo preservam o histórico anterior.
+
 > **Beta Linux atual: 0.5.0-beta.2.** Corrige a falha de carregamento Pillow/Tk da beta.1. Os dois executáveis passaram nos testes automáticos e renderizaram as sete imagens de ajuda em Xvfb. Testes de webcam/chamada em máquina real ainda pendentes. [Instalação e relatos](LINUX.md). As seções abaixo preservam o histórico das tentativas anteriores; não são atualização de todos os alvos para beta.2.
 
 > **Atualização de 28/10/2026:** beta pública Apple Silicon e Linux x64/ARM64. [Download e instalação](MAC_APPLE_SILICON.md). As seções cronológicas abaixo preservam resultados das tentativas anteriores; não são certificação de uso real Linux nem anúncio de download Intel. A verificação ampla de rede continua pendente.
@@ -14,7 +16,7 @@ Linux tem downloads beta para avaliação, sem teste em máquina real; Intel con
 | --- | --- | --- |
 | Windows x64 | EXE portátil e instalador por usuário | Compilação e autotestes da beta passaram; teste físico da atualização pendente |
 | Mac Apple Silicon | APP dentro de DMG | Beta publicada: build/autoteste passaram; proprietário confirmou funcionamento no M1 em 28/10/2026; escopo específico e macOS não informados |
-| Mac Intel x86_64 | APP dentro de DMG | Colisão na receita nativa identificada; correção em teste; não bloqueia os demais pacotes |
+| Mac Intel x86_64 | APP dentro de DMG | Beta Intel publicada: build e autotestes nativos passaram; proprietário confirmou uso em M1/Rosetta; teste físico Intel pendente |
 | Linux x86_64 | TAR.GZ com executável e recursos | OpenCV/NumPy enxutos, inferência, compilação e autoteste passaram; beta pública experimental, sem teste em máquina real; bugs possíveis |
 | Linux ARM64 | TAR.GZ com executável e recursos | OpenCV/NumPy enxutos, inferência, compilação e autoteste passaram; beta pública experimental, sem teste em máquina real; bugs possíveis |
 

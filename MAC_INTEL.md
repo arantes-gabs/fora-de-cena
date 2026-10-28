@@ -1,131 +1,96 @@
-# Mac Intel — receita experimental, sem download liberado
+# Fora de Cena no Mac — Intel
 
-O aplicativo tem uma tentativa de compilação para macOS Intel x86_64, mantendo
-Python 3.14, MediaPipe 1.1.1 e as versões atuais do aplicativo. **A compilação
-está sendo tentada no runner Intel; ainda não foi concluída com todos os testes.
-Não é suporte confirmado.** O acompanhamento fica em [MULTIPLATAFORMA.md](MULTIPLATAFORMA.md).
-Nenhum pacote Intel foi publicado. `distribution_ready=false` permanece.
+**Beta experimental para Mac Intel x86_64, com macOS 15 ou posterior.**
 
-Para inspecionar os insumos no Windows, sem baixar ou compilar, execute
-`python tools/build_mediapipe_intel.py --plan`.
+[**Baixar o aplicativo Intel — DMG**](https://github.com/arantes-gabs/fora-de-cena/releases/download/v0.5.0-beta.2-intel.1/ForaDeCena-0.5.0-beta.2-macos-x86_64-experimental.dmg) · [Notas, fontes, licenças e checksums](https://github.com/arantes-gabs/fora-de-cena/releases/tag/v0.5.0-beta.2-intel.1)
 
-## Por que há uma compilação específica
+O aplicativo já inclui Python, bibliotecas e modelos. Quem só quer usar precisa
+baixar apenas o DMG; não precisa clonar o projeto ou compilar os fontes.
 
-O PyPI oficial não disponibiliza wheel Intel do MediaPipe 1.1.1. A versão
-0.10.21 possui wheel Intel, mas exige uma pilha diferente, incluindo NumPy <2.
-Essa versão antiga não é selecionada automaticamente.
+## Instalar e abrir
 
-A receita usa o código C API da tag oficial `v1.1.1`, conferindo o commit
-`50505c8312c7eacb1bd411cecdc4cc9fd08d53cb`. Compila diretamente o target
-`//mediapipe/tasks/c:mediapipe_tasks_vision_lib` com Bazel 7.7.0, CPU Intel e execução
-de modelos em CPU. Assim evita o `setup.py`, que fixa ARM no Mac, e o target
-que pode escolher uma biblioteca ARM pré-compilada.
+1. Confira o processador em **menu Apple → Sobre Este Mac**. Se for M1 em diante,
+   prefira o [pacote Apple Silicon](MAC_APPLE_SILICON.md). Este download é para Intel.
+2. Baixe e abra o DMG. Arraste **Fora de Cena.app** para **Aplicativos**.
+3. Se houver outra versão instalada, preserve-a em uma pasta separada antes de
+   substituir o app. Não mantenha as duas usando a webcam ao mesmo tempo.
+4. Abra o app pela pasta Aplicativos. Como não há notarização Apple, pode aparecer
+   “A Apple não pôde verificar…”. Após tentar abrir, use **Ajustes do Sistema →
+   Privacidade e Segurança → Abrir Mesmo Assim** somente para o download oficial.
+   Não desative Gatekeeper ou outras proteções do Mac.
+5. Permita o acesso à webcam. Se negou, confira **Privacidade e Segurança → Câmera**.
 
-É o target oficial do domínio de visão, com biblioteca independente, exportação
-somente da API C e remoção do código não referenciado. Não inclui os domínios de
-áudio, texto ou busca do pacote monolítico. A wheel é dedicada a este aplicativo;
-não substitui uma instalação MediaPipe completa para outros projetos. Os testes
-devem confirmar importação, mãos, face e segmentação antes do empacotamento.
+## Primeiro teste
 
-Um patch pequeno e identificado por SHA-256 configura o OpenCV privado da C API
-como estático, com processamento de imagens em memória e codecs externos/GUI
-desligados. O OpenCV Python usado pelo app para câmera e JPEG permanece separado.
-Isso evita depender da lista de bibliotecas Linux do build estático original
-no Mac. A compatibilidade desse perfil C/C++ também precisa do primeiro build
-Intel; o patch não substitui os testes de inferência ou a revisão de licenças.
-O arquivo OpenCV 3.4.11 também tem SHA-256 fixado no WORKSPACE, além do commit
-MediaPipe, do Bazel e do template Python.
+Selecione **Só prévia**, escolha sua webcam e inicie a câmera. Mantenha o fundo
+**Estático**, capture o cenário vazio e confirme. Volte e teste o gesto ilustrado
+em **Como fazer** ou **Ativar efeito**. Use **Reaparecer** e **Restaurar** para
+recuperar sua imagem; alguns teclados exigem **Fn + F8**.
 
-O patch corrige uma colisão entre o nome de saída automático do `cc_binary`
-macOS e o genrule que o copia: a cópia recebe um nome distinto. Também limita
-o CMake privado a três tarefas paralelas. O arquivo da macro upstream é
-conferido por SHA-256 antes dessas alterações.
+## Usar no Meet, Discord, Teams ou OBS
 
-Os arquivos Python e avisos da wheel oficial da mesma versão são preservados.
-A biblioteca ARM é substituída por uma **nova biblioteca compilada e auditada
-para Intel**. A wheel recebe build tag `1fdcintel`, plataforma x86_64 e um novo
-inventário `RECORD`. Renomear uma wheel ARM não oferece suporte Intel: a receita
-recusa bibliotecas sem a arquitetura exigida ou membros nativos inesperados.
+1. Instale [OBS Studio 30 ou posterior](https://obsproject.com/download), compatível
+   com seu macOS. A prévia dentro do Fora de Cena funciona sem OBS.
+2. No OBS, inicie e pare a câmera virtual uma vez. Feche o OBS.
+3. Se solicitado, autorize **OBS Virtual Camera** em **Ajustes do Sistema → Geral →
+   Itens de Início e Extensões → Extensões de Câmera**. Reabra o navegador.
+4. No Fora de Cena, use sua webcam física como entrada e **OBS Virtual Camera** como
+   saída. Inicie o vídeo antes de selecionar essa câmera na chamada.
+5. Desative desfoque e fundos virtuais no serviço de chamada.
 
-Fontes, Bazel, template Python e wheel produzida têm identificação por commit
-ou SHA-256 no perfil/proveniência. A proveniência é conferida novamente contra
-a wheel instalada antes de empacotar o aplicativo. Essa conferência identifica
-os insumos; não substitui a revisão das dependências transitivas compiladas.
+Não deixe a câmera virtual iniciada no OBS enquanto o Fora de Cena a utiliza.
+A extensão de navegador é opcional e serve somente para fechar a aba vinculada
+no Meet. Veja [COMO_USAR.md](COMO_USAR.md).
 
-## Executar na branch de testes do GitHub
+## O que foi validado
 
-Pushes autorizados em `testing/mac-linux` sondam compatibilidade Intel. A compilação Intel é opcional, pela opção manual `build_macos_intel`, desligada por padrão quando o workflow estiver na branch principal. A tentativa já iniciada pode terminar independentemente dos pacotes Mac ARM64/Linux. Não deve bloquear a entrega deles.
+- Build completo no runner Mac Intel `macos-15-intel`, em cerca de 20 minutos.
+- Dependências, testes, quatro modelos, interface e executável empacotado.
+- As sete imagens de gestos, arquitetura x86_64, bibliotecas e assinatura ad-hoc.
+- O proprietário informou que o teste completo em **M1 com Rosetta** funcionou.
+  Não foram informadas separadamente a versão do macOS ou medições de desempenho.
+- **Ainda não há confirmação de webcam/chamada em um Mac Intel físico.** O teste
+  pelo Rosetta não certifica desempenho ou compatibilidade de todos os Macs Intel.
 
-Acompanhe o job Intel: compilação C API → instalação da wheel explícita e
-   lock → testes Python/JS → inferência sintética → DMG → autoteste do executável.
+[Execução nativa](https://github.com/arantes-gabs/fora-de-cena/actions/runs/40733625127).
 
-Há limite de 120 minutos no job e 90 minutos na etapa de compilação C++.
-Se houver incompatibilidade de toolchain, dependência, espaço ou API, o job
-deve falhar; o erro precisa ser corrigido antes de anunciar um candidato.
-A opção normal de teste só confirma que a wheel oficial Intel está ausente.
-Um job de sondagem verde, com aviso BLOCKED, não certifica funcionamento.
+## Limites e privacidade
 
-Usa o runner padrão `macos-15-intel` de repositório público. Não guarda artifacts,
-não cria Releases e não altera cobrança, drivers ou configurações do computador.
-O DMG experimental é descartado junto com a máquina; a disponibilização para
-testadores exige uma etapa de publicação separada, após revisão e autorização.
+Intel usa **OpenCV DNN em CPU**, com modelos locais de palma, pontos da mão,
+rosto e segmentação. Este pacote não importa MediaPipe nem ONNX Runtime.
+A interface, os efeitos e as regras dos gestos são compartilhados com os demais
+sistemas; a precisão do recorte e dos gestos pode diferir. Sem garantia de 30 FPS.
+Se necessário, teste 640 × 480 e fundo Estático.
 
-## Compilar manualmente em Mac Intel
+A ausência de MediaPipe neste perfil não é uma certificação de ausência de rede.
+A verificação geral de dependências segue pendente. Permanecem
+`distribution_ready=false` e `dependency_network_verified=false`. Leia
+[Privacidade](PRIVACY.md). Os efeitos não garantem anonimização.
 
-Use Python 3.14 x86_64 com Tk e ferramentas de linha de comando do Xcode já
-instaladas. Esta é uma receita de desenvolvimento; quem receber um aplicativo
-final não precisará compilar MediaPipe, instalar Python ou Bazel.
+## Fontes, versão e integridade
+
+A versão interna do app continua **0.5.0-beta.2**. A tag **v0.5.0-beta.2-intel.1** identifica
+esta distribuição Intel separada, preservando a Release beta.2 do Linux.
+O DMG é exatamente o testado no CI e pelo proprietário, sem recompilação.
+
+Os [fontes desta distribuição](https://github.com/arantes-gabs/fora-de-cena/tree/v0.5.0-beta.2-intel.1) correspondem ao commit
+`03b49f86d3f784c0ee2a58c33db691c6f406e12d`. Para reproduzir ou estudar o Intel,
+use essa tag ou o ZIP de fontes da Release; a main pode conter outro estado de
+código. A documentação atualizada fica na main. A licença do aplicativo é MIT;
+o auxiliar independente de saída é GPL-2.0-only e seus fontes/avisos acompanham o DMG.
+
+Para conferir o DMG no Terminal:
 
 ```sh
-python3.14 -m venv .venv
-. .venv/bin/activate
-python -m pip install --only-binary=:all: packaging==26.3 macholib==1.16.4 altgraph==0.17.5
-python tools/build_mediapipe_intel.py
-python -m pip install --only-binary=:all: work/mediapipe-intel/wheels/*.whl -r requirements.lock.txt -r requirements-build.txt
-python -m pip check
-python setup_models.py
-python -m unittest discover -s tests -q
-node --test tests/meet_extension.test.mjs
-python main.py --self-test --report work/intel-source-self-test.json
-python tools/fetch_distribution_sources.py
-python tools/build_unix.py --mediapipe-wheel work/mediapipe-intel/wheels/mediapipe-1.1.1-1fdcintel-py3-none-macosx_15_0_x86_64.whl --mediapipe-provenance work/mediapipe-intel/provenance.json
+shasum -a 256 ForaDeCena-0.5.0-beta.2-macos-x86_64-experimental.dmg
 ```
 
-O build recusa diretório de trabalho anterior, para evitar reutilizar binários
-de outra tentativa. Preserve relatórios antes de preparar uma pasta de trabalho
-nova; nenhum script remove recursivamente os seus dados para tentar de novo.
-Se faltar a licença da distribuição Python, use `--python-license` conforme
-[MAC_LINUX.md](MAC_LINUX.md). O comando de CI fixa Python 3.14.7 e confere a
-licença correspondente; o build manual aceita a série 3.14 do desenvolvedor.
+Compare com `SHA256SUMS.txt` da [Release](https://github.com/arantes-gabs/fora-de-cena/releases/tag/v0.5.0-beta.2-intel.1). O checksum confere os bytes;
+não substitui assinatura Developer ID ou notarização.
 
-## O que ainda falta
+## Relatar problemas
 
-- Compilação nativa efetiva e todos os autotestes no runner Intel. Os testes
-  Windows verificam lógica, formato da wheel e barreiras de empacotamento;
-  não executam uma biblioteca Intel de macOS.
-- Revisão de licenças, fontes correspondentes e dependências nativas do build
-  de MediaPipe e do bundle completo. OpenCV Intel usa a wheel oficial nesta
-  primeira tentativa e pode incluir FFmpeg/Qt: não é o perfil enxuto ARM64.
-- Verificação de rede das dependências, especialmente MediaPipe, permanece
-  pendente. Usar modelos locais não comprova ausência de telemetria.
-- Testes reais em um Mac Intel: prévia, câmera interna/USB, gestos, efeitos,
-  restauração, captura do fundo, desempenho, permissão de câmera, OBS Virtual
-  Camera e uma chamada confirmada por outro participante.
-
-O mínimo inicial do perfil é macOS 15. O mínimo efetivo de todas as bibliotecas
-é auditado e registrado no candidato; não anunciar macOS antigo nem pacote
-universal2. Apple Silicon e Intel permanecem pacotes separados. Não há assinatura
-Developer ID ou notarização; mantém-se a orientação de autorização individual
-do macOS, sem desativar Gatekeeper.
-
-## Referências técnicas
-
-- [MediaPipe 1.1.1: target C API](https://github.com/google-ai-edge/mediapipe/blob/50505c8312c7eacb1bd411cecdc4cc9fd08d53cb/mediapipe/tasks/c/BUILD)
-- [MediaPipe 1.1.1: configurações de CPU Mac](https://github.com/google-ai-edge/mediapipe/blob/50505c8312c7eacb1bd411cecdc4cc9fd08d53cb/.bazelrc)
-- [PyPI: arquivos oficiais de MediaPipe 1.1.1](https://pypi.org/project/mediapipe/1.1.1/#files)
-- [Bazel: biblioteca compartilhada](https://bazel.build/reference/be/c-cpp#cc_binary.linkshared)
-- [PyInstaller: arquiteturas macOS](https://pyinstaller.org/en/stable/feature-notes.html#macos-multi-arch-support)
-
-A documentação Google de wheels descreve principalmente pipelines manylinux.
-Esta receita Intel é uma adaptação experimental do Fora de Cena; não é uma
-receita Mac Intel homologada pelo fornecedor.
+[Abra um relato](https://github.com/arantes-gabs/fora-de-cena/issues/new/choose) com versão do macOS, chip, versão do
+app e passos para reproduzir. Informe se usou Intel físico ou Rosetta.
+Remova dados pessoais, caminhos privados e credenciais antes de compartilhar logs.
+Para vulnerabilidades, siga [SECURITY.md](SECURITY.md).

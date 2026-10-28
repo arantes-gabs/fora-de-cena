@@ -1,5 +1,14 @@
 # Histórico de versões
 
+## 0.5.0-beta.2 · Intel beta — 28/10/2026
+
+- Release separada `v0.5.0-beta.2-intel.1`, com o mesmo DMG Intel testado, sem recompilação.
+- OpenCV DNN em CPU, quatro modelos locais fixados por hash e perfil de dependências Intel sem MediaPipe/ONNX Runtime.
+- Build, testes, inferência, interface, sete imagens e auditoria do executável passaram em runner Intel.
+- Proprietário confirmou funcionamento no M1 com Rosetta; teste em Mac Intel físico continua pendente.
+- Downloads, fontes correspondentes, licenças, checksums e guia Intel publicados. Versões Windows, Apple Silicon e Linux preservadas.
+- Sem notarização Apple; verificação geral de rede pendente e `distribution_ready=false` mantido.
+
 ## 0.5.0-beta.2 — 28/10/2026 · correção Linux
 
 - Inclui explicitamente os módulos Pillow/Tk carregados dinamicamente, corrigindo a falha de inicialização relatada no Linux x64.

@@ -17,7 +17,7 @@ Desapareça da webcam com um gesto e reapareça quando quiser. Teleporte, fumaç
 | **Mac Apple Silicon — M1 em diante** | [Baixar DMG](https://github.com/arantes-gabs/fora-de-cena/releases/download/v0.5.0-beta.1/ForaDeCena-0.5.0-beta.1-macos-arm64-experimental.dmg) | 0.5.0-beta.1 |
 | **Linux Intel/AMD 64 bits** | [Baixar TAR.GZ x64](https://github.com/arantes-gabs/fora-de-cena/releases/download/v0.5.0-beta.2/ForaDeCena-0.5.0-beta.2-linux-x86_64-experimental.tar.gz) | 0.5.0-beta.2 |
 | **Linux ARM64** | [Baixar TAR.GZ ARM64](https://github.com/arantes-gabs/fora-de-cena/releases/download/v0.5.0-beta.2/ForaDeCena-0.5.0-beta.2-linux-arm64-experimental.tar.gz) | 0.5.0-beta.2 |
-| **Mac Intel** | Ainda sem download | Em desenvolvimento |
+| **Mac Intel 64 bits** | [Baixar DMG Intel](https://github.com/arantes-gabs/fora-de-cena/releases/download/v0.5.0-beta.2-intel.1/ForaDeCena-0.5.0-beta.2-macos-x86_64-experimental.dmg) | 0.5.0-beta.2 · Intel beta |
 
 Mac e Linux são **betas experimentais** e podem apresentar falhas. As versões são diferentes entre sistemas: escolha pela sua plataforma.
 
@@ -57,7 +57,7 @@ Não precisa manter o OBS aberto. Se estiver aberto, deixe a câmera virtual par
 
 ## Mac
 
-**Compatível com Apple Silicon — M1 em diante — e macOS 15 ou posterior.** Para conferir seu chip, abra **menu Apple → Sobre Este Mac**.
+**Escolha o DMG para seu chip: Apple Silicon (M1 em diante) ou Intel. Ambos exigem macOS 15 ou posterior.** Para conferir seu chip, abra **menu Apple → Sobre Este Mac**.
 
 ### Abrir o aplicativo
 
@@ -66,7 +66,7 @@ Não precisa manter o OBS aberto. Se estiver aberto, deixe a câmera virtual par
 3. Se a Apple bloquear a abertura, após tentar abrir, vá a **Ajustes do Sistema → Privacidade e Segurança → Abrir Mesmo Assim**.
 4. Permita o acesso à webcam quando solicitado.
 
-Esta beta não tem notarização Apple. Autorize somente o download oficial; não desative o Gatekeeper. Há confirmação de funcionamento em um M1, sem garantia para todas as combinações de hardware e serviços.
+As betas não têm notarização Apple. Autorize somente o download oficial; não desative o Gatekeeper. A versão Apple Silicon foi testada em M1. A beta Intel passou nos testes nativos do runner e foi testada pelo proprietário em M1 com Rosetta; teste em um Mac Intel físico ainda está pendente.
 
 ### Usar nas chamadas
 
@@ -78,7 +78,7 @@ Esta beta não tem notarização Apple. Autorize somente o download oficial; nã
 
 Não deixe a câmera virtual iniciada no OBS ao mesmo tempo.
 
-[Mais informações sobre o Mac →](MAC_APPLE_SILICON.md)
+[Guia Apple Silicon →](MAC_APPLE_SILICON.md) · [Guia Intel →](MAC_INTEL.md)
 
 ---
 
@@ -168,7 +168,7 @@ Informe seu sistema, versão do app e o que aconteceu. Os relatos são públicos
 
 As imagens são processadas no computador. O aplicativo não grava imagens, não abre o microfone nem envia vídeo a servidores próprios. O fundo fica em memória durante a sessão.
 
-**O MediaPipe declara métricas de uso/desempenho.** Foram observadas tentativas HTTPS em uma amostra sintética; a origem exata segue em investigação. Processamento local não significa ausência garantida de conexões externas.
+**Nos pacotes que usam MediaPipe, o fornecedor declara métricas de uso/desempenho.** Foram observadas tentativas HTTPS em uma amostra sintética; a origem exata segue em investigação. O pacote Intel usa OpenCV DNN, sem MediaPipe. A verificação geral de rede continua pendente; processamento local não significa ausência garantida de conexões externas.
 
 A chamada transmite pelo serviço escolhido. Os efeitos podem falhar e **não garantem anonimização**.
 
@@ -180,6 +180,7 @@ O repositório inclui aplicativo, efeitos, gestos, auxiliar de vídeo, extensão
 
 - [Executar pelos fontes e conhecer a arquitetura](DESENVOLVIMENTO.md)
 - [Construir os pacotes](DISTRIBUIR.md)
+- [Fontes da beta Intel](https://github.com/arantes-gabs/fora-de-cena/tree/v0.5.0-beta.2-intel.1) — use a tag desta Release para reproduzir o pacote Intel.
 - [Estado da adaptação Mac/Linux](MULTIPLATAFORMA.md)
 - [Contribuir na sua cópia](CONTRIBUTING.md)
 
