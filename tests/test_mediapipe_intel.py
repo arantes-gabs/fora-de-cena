@@ -7,6 +7,7 @@ import io
 import json
 from pathlib import Path
 import tempfile
+import subprocess
 import sys
 import unittest
 from unittest.mock import patch
@@ -16,6 +17,29 @@ from tools.mediapipe_intel import digest, load_profile, make_wheel, validate_art
 
 
 class IntelWheelTests(unittest.TestCase):
+    def test_native_compile_has_a_finite_budget_and_preserves_build_failures(self):
+        from tools.build_mediapipe_intel import compile_native
+        source=Path('fixture-source')
+        environment={'HOME':'fixture-isolated-home'}
+        with patch('tools.build_mediapipe_intel.subprocess.run') as run:
+            compile_native(['fixture-bazel','build'],source,environment)
+        run.assert_called_once_with(['fixture-bazel','build'],cwd=source,env=environment,
+                                    check=True,timeout=9000)
+        with patch('tools.build_mediapipe_intel.subprocess.run',
+                   side_effect=subprocess.CalledProcessError(1,['fixture-bazel'])), \
+                self.assertRaises(subprocess.CalledProcessError):
+            compile_native(['fixture-bazel'],source,environment)
+
+    def test_native_timeout_does_not_echo_command_paths_or_environment(self):
+        from tools.build_mediapipe_intel import compile_native
+        with patch('tools.build_mediapipe_intel.subprocess.run',
+                   side_effect=subprocess.TimeoutExpired(['fixture-private-path'],9000)), \
+                self.assertRaises(RuntimeError) as error:
+            compile_native(['fixture-private-path'],Path('fixture'),{'HOME':'fixture-private-home'})
+        self.assertIn('150 minutes',str(error.exception))
+        self.assertNotIn('fixture',str(error.exception))
+        self.assertTrue(error.exception.__suppress_context__)
+
     def test_build_plan_can_be_reviewed_on_windows_without_executing_or_downloading(self):
         from tools.build_mediapipe_intel import main
         with patch.object(sys, 'argv', ['build_mediapipe_intel.py', '--plan']), \

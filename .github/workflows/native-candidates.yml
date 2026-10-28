@@ -16,6 +16,10 @@ on:
         description: EXPERIMENTAL - compile MediaPipe 1.1.1 from source on Mac Intel, test and attempt a DMG (no stored downloads)
         type: boolean
         default: false
+      intel_only:
+        description: Skip Windows, Apple Silicon and Linux checks; select build_macos_intel to compile Intel
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -29,7 +33,7 @@ env:
 
 jobs:
   native:
-    if: github.event.repository.private == false && (github.ref == 'refs/heads/testing/mac-linux' || github.ref == 'refs/heads/main')
+    if: github.event.repository.private == false && (github.ref == 'refs/heads/testing/mac-linux' || github.ref == 'refs/heads/main') && (github.event_name != 'workflow_dispatch' || !inputs.intel_only)
     name: ${{ matrix.target }} - tests and optional build
     strategy:
       fail-fast: false
@@ -120,7 +124,7 @@ jobs:
     concurrency:
       group: intel-validation-${{ github.ref }}
       cancel-in-progress: false
-    timeout-minutes: 120
+    timeout-minutes: 180
     defaults:
       run:
         shell: bash

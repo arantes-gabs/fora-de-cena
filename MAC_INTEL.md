@@ -2,7 +2,8 @@
 
 O aplicativo tem uma tentativa de compilação para macOS Intel x86_64, mantendo
 Python 3.14, MediaPipe 1.1.1 e as versões atuais do aplicativo. **A compilação
-está sendo tentada no runner Intel; ainda não foi concluída com todos os testes.
+foi interrompida pelo limite anterior de 90 minutos no runner Intel;
+a receita revisada ainda precisa de uma nova execução e de todos os testes.
 Não é suporte confirmado.** O acompanhamento fica em [MULTIPLATAFORMA.md](MULTIPLATAFORMA.md).
 Nenhum pacote Intel foi publicado. `distribution_ready=false` permanece.
 
@@ -59,7 +60,17 @@ Pushes autorizados em `testing/mac-linux` sondam compatibilidade Intel. A compil
 Acompanhe o job Intel: compilação C API → instalação da wheel explícita e
    lock → testes Python/JS → inferência sintética → DMG → autoteste do executável.
 
-Há limite de 120 minutos no job e 90 minutos na etapa de compilação C++.
+O log da tentativa de 28/10/2026 terminou em 7.443 de 8.079 ações do Bazel,
+ainda compilando, ao atingir 5.400 segundos. Não houve erro C++ fatal registrado
+nesse trecho final. O contador não é uma estimativa de tempo nem prova que o
+link e os testes seguintes passarão.
+
+A receita revisada limita a compilação C++ a 150 minutos e o job a 180 minutos,
+reservando tempo para instalação, inferência, DMG e autoteste. Mantém três
+tarefas paralelas e os mesmos insumos fixados; não troca dependências por
+versões antigas nem usa runner pago. A opção manual `intel_only=true`, junto
+de `build_macos_intel=true`, pula os quatro jobs de outras plataformas.
+Essa alteração local precisa ser enviada com autorização antes da nova tentativa.
 Se houver incompatibilidade de toolchain, dependência, espaço ou API, o job
 deve falhar; o erro precisa ser corrigido antes de anunciar um candidato.
 A opção normal de teste só confirma que a wheel oficial Intel está ausente.
@@ -125,6 +136,8 @@ do macOS, sem desativar Gatekeeper.
 - [PyPI: arquivos oficiais de MediaPipe 1.1.1](https://pypi.org/project/mediapipe/1.1.1/#files)
 - [Bazel: biblioteca compartilhada](https://bazel.build/reference/be/c-cpp#cc_binary.linkshared)
 - [PyInstaller: arquiteturas macOS](https://pyinstaller.org/en/stable/feature-notes.html#macos-multi-arch-support)
+- [GitHub: runner Intel padrão gratuito para repositório público](https://docs.github.com/en/actions/reference/runners/github-hosted-runners)
+- [GitHub: limite máximo de seis horas por job hospedado](https://docs.github.com/en/actions/reference/limits)
 
 A documentação Google de wheels descreve principalmente pipelines manylinux.
 Esta receita Intel é uma adaptação experimental do Fora de Cena; não é uma

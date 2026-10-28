@@ -12,6 +12,7 @@ import sys
 import urllib.request
 
 ROOT = Path(__file__).resolve().parents[1]
+COMPILE_TIMEOUT_SECONDS = 150 * 60
 sys.path.insert(0, str(ROOT))
 from tools.mediapipe_intel import PROFILE, digest, load_profile, make_wheel
 
@@ -29,6 +30,15 @@ def download(url: str, destination: Path, expected: str) -> None:
             output.write(chunk)
     if digest(destination) != expected:
         raise ValueError('Build input SHA256 mismatch: ' + destination.name)
+
+
+def compile_native(command: list[str], source: Path, environment: dict[str, str]) -> None:
+    try:
+        subprocess.run(command, cwd=source, env=environment, check=True,
+                       timeout=COMPILE_TIMEOUT_SECONDS)
+    except subprocess.TimeoutExpired:
+        raise RuntimeError('Intel C++ compilation exceeded 150 minutes. No verified wheel was produced; '
+                           'inspect the last compiler action before retrying.') from None
 
 
 def main() -> None:
@@ -106,7 +116,7 @@ def main() -> None:
                '--copt=-ffile-prefix-map=' + str(Path.home()) + '=/usr/src/fora-de-cena-build-home',
                '--cxxopt=-ffile-prefix-map=' + str(Path.home()) + '=/usr/src/fora-de-cena-build-home',
                profile['build_target']]
-    subprocess.run(command, cwd=source, env=environment, check=True, timeout=90 * 60)
+    compile_native(command, source, environment)
     native = work / 'libmediapipe.dylib'
     shutil.copyfile(source / profile['native_output'], native)
     subprocess.run(['/usr/bin/codesign', '--force', '--sign', '-', str(native)], check=True)

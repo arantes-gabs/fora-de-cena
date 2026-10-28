@@ -69,7 +69,7 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJSON(needs.prepare.outputs.matrix) }}
     runs-on: ${{ matrix.runner }}
-    timeout-minutes: 150
+    timeout-minutes: ${{ matrix.target == 'macos-x86_64' && 180 || 150 }}
     permissions:
       contents: write
     defaults:
