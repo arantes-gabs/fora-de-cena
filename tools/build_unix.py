@@ -105,6 +105,22 @@ def create_tarball(payload: Path, destination: Path) -> None:
                 archive.addfile(info)
 
 
+def run_gui_diagnostic(executable: Path, work: Path) -> dict[str, object]:
+    report_path = work / 'native-gui-self-test.json'
+    environment = system_environment()
+    environment.update(PATH='/usr/bin:/bin:/usr/sbin:/sbin', PYINSTALLER_RESET_ENVIRONMENT='1')
+    command = ['/usr/bin/xvfb-run', '--auto-servernum', str(executable),
+               '--gui-self-test', '--report', str(report_path)]
+    completed = subprocess.run(command, cwd=work, env=environment, timeout=60, check=False)
+    report = json.loads(report_path.read_text(encoding='utf-8'))
+    if (completed.returncode or report.get('ok') is not True or report.get('frozen') is not True
+            or report.get('version') != __version__ or report.get('guide_images_rendered') != 7
+            or report.get('camera_opened') is not False or report.get('meet_bridge_opened') is not False):
+        detail = public_error(str(report.get('error', 'RuntimeError')) + ': ' + str(report.get('detail', 'invalid GUI result')))
+        raise RuntimeError('Linux frozen GUI diagnostic failed: ' + detail)
+    return report
+
+
 def run_diagnostic(executable: Path, work: Path) -> dict[str, object]:
     report_path = work / 'native-self-test.json'
     environment = system_environment()
@@ -216,12 +232,15 @@ def build(python_license: Path | None = None, opencv_wheel: Path | None = None,
         manifest['minimum_target'] = 'macOS ' + audit['minimum_macos']
         (work / 'macos-bundle-audit.json').write_text(json.dumps(audit, indent=2), encoding='utf-8')
     diagnostic = run_diagnostic(executable, work)
+    gui_diagnostic = run_gui_diagnostic(executable, work) if sys.platform == 'linux' else None
     if sys.platform == 'darwin':
         subprocess.run(['/usr/bin/codesign', '--verify', '--deep', '--strict', str(payload)], check=True)
     manifest['validation'] = {'native_self_test': diagnostic['ok'], 'frozen': diagnostic['frozen'],
                               'camera_opened': diagnostic['camera_opened'],
                               'dependency_network_verified': False, 'real_camera_and_calls_tested': False,
                               'ad_hoc_signature_verified': sys.platform == 'darwin'}
+    if gui_diagnostic is not None:
+        manifest['validation']['guide_images_rendered'] = gui_diagnostic['guide_images_rendered']
     manifest['pending'].remove('native-build-and-self-test')
     output = Path(tempfile.mkdtemp(prefix=target + '-', dir=output_base))
     package_compliance(output, __version__, work / 'notices')

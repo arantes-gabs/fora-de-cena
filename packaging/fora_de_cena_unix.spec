@@ -29,7 +29,9 @@ for name in ('hand_landmarker.task', 'face_detector.tflite', 'selfie_segmenter_l
 datas += collect_data_files('customtkinter') + collect_data_files('mediapipe')
 a = Analysis([str(root / 'main.py')], pathex=[str(root)],
     binaries=collect_dynamic_libs('mediapipe'), datas=datas,
-    hiddenimports=['mediapipe.tasks.c'], hooksconfig={'matplotlib': {'backends': ['Agg']}},
+    # Pillow's native Tk bridge imports the finder dynamically on Linux.
+    hiddenimports=['mediapipe.tasks.c', 'PIL._tkinter_finder', 'PIL._imagingtk'],
+    hooksconfig={'matplotlib': {'backends': ['Agg']}},
     excludes=['IPython', 'jupyter', 'pytest', 'readline', 'sounddevice', 'pyvirtualcam', 'camera_output'], noarchive=False)
 a.datas = [entry for entry in a.datas if Path(entry[0]).name != 'direct_url.json']
 # Unix OpenCV may link FFmpeg directly: do not remove its libraries and break loading.

@@ -67,7 +67,7 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libgl1 libegl1 libgles2 libglib2.0-0 libportaudio2 strace
+          sudo apt-get install -y libgl1 libegl1 libgles2 libglib2.0-0 libportaudio2 strace xvfb xauth
       - name: Check pinned dependencies without executing packages
         run: |
           python -m pip install --only-binary=:all: packaging==26.3

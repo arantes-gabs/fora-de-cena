@@ -1,5 +1,13 @@
 # Histórico de versões
 
+## 0.5.0-beta.2 — correção Linux em preparação
+
+- Inclui explicitamente os módulos Pillow/Tk carregados dinamicamente, corrigindo a falha de inicialização relatada no Linux x64.
+- Novo teste gráfico do executável Linux renderiza as sete imagens de ajuda via Tk/Pillow em Xvfb, sem webcam ou ponte Meet.
+- Erros de inicialização Unix passam a mostrar orientação no terminal.
+- Geração Linux x64/ARM64 em rascunho; ainda sem download público da beta.2. Mac e Windows publicados permanecem nas versões anteriores.
+- Configuração de testes: apenas Linux, sem compilar as outras plataformas.
+
 ## 0.5.0-beta.1 — 28/10/2026 · beta Apple Silicon e Linux
 
 - Integração das correções testadas no Mac M1: Configurar em janela nativa no Mac,

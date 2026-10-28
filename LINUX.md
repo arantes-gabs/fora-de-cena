@@ -1,5 +1,7 @@
 # Linux — beta experimental 0.5.0-beta.1
 
+**Problema conhecido no Linux beta.1:** houve falha de abertura confirmada ao carregar as ilustrações (`PIL._tkinter_finder` ausente). A correção 0.5.0-beta.2 está em preparação e ainda não foi publicada. Os downloads Mac/Windows não são substituídos por essa correção.
+
 **Não foi testada em uma máquina Linux real por um usuário. Pode apresentar bugs, falhas de câmera ou incompatibilidades.** Compilação nativa, testes automatizados, inferência sintética e autotestes dos pacotes passaram nos runners Linux do GitHub. Isso não certifica webcam, desempenho, saída virtual ou chamadas reais.
 
 ## Qual arquivo baixar

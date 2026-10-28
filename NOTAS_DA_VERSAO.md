@@ -1,5 +1,13 @@
 # Fora de Cena 0.5.0-beta.1 — Apple Silicon e Linux · 28/10/2026
 
+## 0.5.0-beta.2 — correção Linux em preparação
+
+- Inclui explicitamente os módulos Pillow/Tk carregados dinamicamente, corrigindo a falha de inicialização relatada no Linux x64.
+- Novo teste gráfico do executável Linux renderiza as sete imagens de ajuda via Tk/Pillow em Xvfb, sem webcam ou ponte Meet.
+- Erros de inicialização Unix passam a mostrar orientação no terminal.
+- Geração Linux x64/ARM64 em rascunho; ainda sem download público da beta.2. Mac e Windows publicados permanecem nas versões anteriores.
+- Configuração de testes: apenas Linux, sem compilar as outras plataformas.
+
 Primeiro download público para Mac Apple Silicon, M1 em diante, macOS 15+. **Beta**, com build nativo e autoteste aprovados e funcionamento confirmado pelo proprietário em seu M1. Windows continua em 0.4.0; Linux x64/ARM64 está disponível como beta sem teste em máquina real; Intel continua sem download público.
 
 ## Baixar

@@ -1,8 +1,8 @@
 #ifndef AppVersion
-  #define AppVersion "0.5.0-beta.1"
+  #define AppVersion "0.5.0-beta.2"
 #endif
 #ifndef AppNumericVersion
-  #define AppNumericVersion "0.5.0.1"
+  #define AppNumericVersion "0.5.0.2"
 #endif
 #ifndef PayloadDir
   #error PayloadDir deve apontar para o pacote validado

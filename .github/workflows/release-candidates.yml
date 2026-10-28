@@ -8,7 +8,7 @@ on:
       target:
         description: Platform to prepare for private owner review
         type: choice
-        options: [mac-linux, all, windows-x64, macos-arm64, macos-x86_64, linux-x86_64, linux-arm64]
+        options: [mac-linux, linux, all, windows-x64, macos-arm64, macos-x86_64, linux-x86_64, linux-arm64]
         default: mac-linux
       expected_commit:
         description: Full 40-character SHA of the reviewed main commit
@@ -87,7 +87,7 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libgl1 libegl1 libgles2 libglib2.0-0 libportaudio2 strace
+          sudo apt-get install -y libgl1 libegl1 libgles2 libglib2.0-0 libportaudio2 strace xvfb xauth
       - name: Check dependency closure
         continue-on-error: ${{ matrix.target == 'macos-x86_64' }}
         run: |

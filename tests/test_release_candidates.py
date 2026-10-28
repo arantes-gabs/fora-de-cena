@@ -92,6 +92,8 @@ class DraftCandidateTests(unittest.TestCase):
         self.assertEqual({x['target'] for x in matrix('mac-linux')['include']},
                          {'macos-arm64','linux-x86_64','linux-arm64'})
         self.assertEqual(matrix('macos-arm64')['include'][0]['runner'],'macos-15')
+        self.assertEqual({x['target'] for x in matrix('linux')['include']},
+                         {'linux-x86_64','linux-arm64'})
         for value in ('../other','fixture/other','all; fixture'):
             with self.assertRaises(ValueError):
                 matrix(value)

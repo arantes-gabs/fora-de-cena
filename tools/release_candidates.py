@@ -30,12 +30,13 @@ TARGETS={
 
 
 def matrix(selection):
-    if selection not in ('all','mac-linux') and selection not in TARGETS:
+    if selection not in ('all','mac-linux','linux') and selection not in TARGETS:
         raise ValueError('Unknown release target.')
     return {'include':[{'target':target,'runner':runner,'architecture':arch}
                        for target,(runner,arch) in TARGETS.items()
                        if selection=='all' or selection==target or
-                       (selection=='mac-linux' and target in ('macos-arm64','linux-x86_64','linux-arm64'))]}
+                       (selection=='mac-linux' and target in ('macos-arm64','linux-x86_64','linux-arm64')) or
+                       (selection=='linux' and target in ('linux-x86_64','linux-arm64'))]}
 
 
 def require_context(env=None):
@@ -97,16 +98,16 @@ def draft(create=False):
         if not create:
             raise RuntimeError('Create the reviewed draft before uploading assets.')
         raw=gh(['api','--hostname','github.com','--method','POST',route,'--input','-'],{
-            'tag_name':tag,'target_commitish':commit,'name':'Fora de Cena '+__version__+' — revisão',
+            'tag_name':tag,'target_commitish':commit,'name':'Fora de Cena '+__version__+' â€” revisÃ£o',
             'draft':True,'prerelease':True,
-            'body':('Rascunho para revisão do proprietário; sem publicação automática.\n\n'
+            'body':('Rascunho para revisÃ£o do proprietÃ¡rio; sem publicaÃ§Ã£o automÃ¡tica.\n\n'
                     'Commit: `'+commit+'`.\n\n'
-                    'Pacotes experimentais, `distribution_ready=false`. Validar câmera, '
-                    'gestos, OBS/saída virtual, chamadas, licenças e rede antes de publicar.\n\n'
-                    'Imagens são processadas localmente. O fornecedor MediaPipe declara métricas '
-                    'de uso/desempenho; a verificação de rede dessa dependência segue pendente. '
-                    'O aplicativo não implementa telemetria própria. Consulte PRIVACY.md.\n\n'
-                    'Os fontes correspondentes da saída e as licenças são específicos de cada plataforma. '
+                    'Pacotes experimentais, `distribution_ready=false`. Validar cÃ¢mera, '
+                    'gestos, OBS/saÃ­da virtual, chamadas, licenÃ§as e rede antes de publicar.\n\n'
+                    'Imagens sÃ£o processadas localmente. O fornecedor MediaPipe declara mÃ©tricas '
+                    'de uso/desempenho; a verificaÃ§Ã£o de rede dessa dependÃªncia segue pendente. '
+                    'O aplicativo nÃ£o implementa telemetria prÃ³pria. Consulte PRIVACY.md.\n\n'
+                    'Os fontes correspondentes da saÃ­da e as licenÃ§as sÃ£o especÃ­ficos de cada plataforma. '
                     'Confira o arquivo SHA256SUMS da plataforma escolhida.\n')})
         record=json.loads(raw)
     else:

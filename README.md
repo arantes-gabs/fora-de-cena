@@ -23,6 +23,9 @@ Testes nativos e confirmação do proprietário em um M1; outras combinações a
 
 ## Linux — beta para testes
 
+**Problema conhecido no Linux beta.1:** houve falha de abertura confirmada ao carregar as ilustrações (`PIL._tkinter_finder` ausente). A correção 0.5.0-beta.2 está em preparação e ainda não foi publicada. Os downloads Mac/Windows não são substituídos por essa correção.
+
+
 **Ainda não testada em uma máquina Linux real por um usuário; pode apresentar bugs.** Os testes automatizados e autotestes dos executáveis passaram, mas câmera, chamadas e desempenho reais ainda precisam de validação.
 
 [**Baixar Linux x64 (Intel/AMD)**](https://github.com/arantes-gabs/fora-de-cena/releases/download/v0.5.0-beta.1/ForaDeCena-0.5.0-beta.1-linux-x86_64-experimental.tar.gz) · [**Baixar Linux ARM64**](https://github.com/arantes-gabs/fora-de-cena/releases/download/v0.5.0-beta.1/ForaDeCena-0.5.0-beta.1-linux-arm64-experimental.tar.gz) · [Como abrir e testar](LINUX.md)

@@ -95,14 +95,43 @@ def self_test() -> dict[str, object]:
             'dependency_network_verified': False, 'virtual_output_tested': False}
 
 
+def gui_self_test() -> dict[str, object]:
+    """Render the real guide images through Tk/Pillow without camera or Meet."""
+    import customtkinter as ctk
+    from PIL import Image
+    from .gesture_guides import GUIDES
+
+    root = ctk.CTk()
+    root.withdraw()
+    names = sorted({guide.image for guide in GUIDES.values()})
+    try:
+        label = ctk.CTkLabel(root, text='')
+        label.pack()
+        for name in names:
+            with Image.open(resource_root() / 'assets' / 'gestures' / name) as original:
+                image = original.convert('RGBA')
+            illustration = ctk.CTkImage(light_image=image, dark_image=image, size=(96, 96))
+            label.configure(image=illustration)
+            root.update_idletasks()
+            photo = illustration.create_scaled_photo_image(1.0, 'light')
+            if photo.width() != 96 or photo.height() != 96:
+                raise RuntimeError('Guide image did not render through Pillow/Tk.')
+        return {'ok': True, 'version': __version__, 'frozen': bool(getattr(sys, 'frozen', False)),
+                'guide_images_rendered': len(names), 'camera_opened': False, 'meet_bridge_opened': False}
+    finally:
+        root.destroy()
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description='Fora de Cena')
-    parser.add_argument('--self-test', action='store_true')
+    diagnostics = parser.add_mutually_exclusive_group()
+    diagnostics.add_argument('--self-test', action='store_true')
+    diagnostics.add_argument('--gui-self-test', action='store_true')
     parser.add_argument('--report', type=Path)
     args = parser.parse_args()
-    if args.self_test:
+    if args.self_test or args.gui_self_test:
         try:
-            report = self_test()
+            report = gui_self_test() if args.gui_self_test else self_test()
         except Exception as error:
             report = {'ok': False, 'error': type(error).__name__, 'detail': str(error)}
         if args.report:
@@ -115,12 +144,16 @@ def main() -> int:
         from .app import main as run_app
         run_app()
         return 0
-    except Exception:
+    except Exception as error:
         # No video, preferences or pairing key is written to this startup log.
         try:
             data_file('startup-error.log').write_text(traceback.format_exc(), encoding='utf-8')
         except OSError:
             pass
+        if sys.platform != 'win32' and sys.stderr is not None:
+            print('Fora de Cena não abriu (' + type(error).__name__ + '). '
+                  'Consulte startup-error.log na pasta de dados do aplicativo; '
+                  'remova dados pessoais antes de compartilhar o log.', file=sys.stderr)
         if sys.platform == 'win32':
             import ctypes
             ctypes.windll.user32.MessageBoxW(None,
