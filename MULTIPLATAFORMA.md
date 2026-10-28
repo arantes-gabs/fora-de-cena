@@ -1,10 +1,10 @@
-> **Atualização de 28/10/2026:** beta pública somente Apple Silicon. [Download e instalação](MAC_APPLE_SILICON.md). As seções cronológicas abaixo preservam resultados das tentativas anteriores; não são anúncio de downloads Linux/Intel. A verificação ampla de rede continua pendente.
+> **Atualização de 28/10/2026:** beta pública Apple Silicon e Linux x64/ARM64. [Download e instalação](MAC_APPLE_SILICON.md). As seções cronológicas abaixo preservam resultados das tentativas anteriores; não são certificação de uso real Linux nem anúncio de download Intel. A verificação ampla de rede continua pendente.
 
 # Mac e Linux — acompanhamento dos testes
 
 Esta branch (`testing/mac-linux`) contém trabalho experimental. Os downloads
 publicados em `v0.4.0` continuam sendo os pacotes Windows existentes. A beta 0.5.0-beta.1 é publicada somente para Apple Silicon;
-Linux e Intel continuam em testes, sem download público nesta Release.
+Linux tem downloads beta para avaliação, sem teste em máquina real; Intel continua sem download público.
 
 ## Matriz de validação
 
@@ -13,8 +13,8 @@ Linux e Intel continuam em testes, sem download público nesta Release.
 | Windows x64 | EXE portátil e instalador por usuário | Compilação e autotestes da beta passaram; teste físico da atualização pendente |
 | Mac Apple Silicon | APP dentro de DMG | Beta publicada: build/autoteste passaram; proprietário confirmou funcionamento no M1 em 28/10/2026; escopo específico e macOS não informados |
 | Mac Intel x86_64 | APP dentro de DMG | Colisão na receita nativa identificada; correção em teste; não bloqueia os demais pacotes |
-| Linux x86_64 | TAR.GZ com executável e recursos | OpenCV/NumPy enxutos, inferência, compilação e autoteste passaram; beta experimental, teste físico pendente |
-| Linux ARM64 | TAR.GZ com executável e recursos | OpenCV/NumPy enxutos, inferência, compilação e autoteste passaram; beta experimental, teste físico pendente |
+| Linux x86_64 | TAR.GZ com executável e recursos | OpenCV/NumPy enxutos, inferência, compilação e autoteste passaram; beta pública experimental, sem teste em máquina real; bugs possíveis |
+| Linux ARM64 | TAR.GZ com executável e recursos | OpenCV/NumPy enxutos, inferência, compilação e autoteste passaram; beta pública experimental, sem teste em máquina real; bugs possíveis |
 
 O estado será atualizado com resultados reais e links das execuções. Check verde
 de CI não certifica câmera, chamada ou desempenho em todos os computadores.

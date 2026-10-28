@@ -1,7 +1,7 @@
 # Fora de Cena
 
-> **Disponível: beta 0.5.0-beta.1 para Mac Apple Silicon (M1 em diante, macOS 15+).**
-> Windows continua na versão 0.4.0. Linux e Mac Intel permanecem em testes, sem download público nesta beta.
+> **Beta 0.5.0-beta.1: Mac Apple Silicon e Linux x64/ARM64.**
+> Windows continua na 0.4.0. Linux não foi testado em máquina real e pode apresentar bugs. Mac Intel segue em desenvolvimento, sem download.
 
 ![Fora de Cena — saídas criativas para suas chamadas](assets/brand/readme-cover.png)
 
@@ -20,6 +20,16 @@ poeira, pixels, saída de desenho e portal para suas chamadas de vídeo.
 Abra o DMG e arraste o app para Aplicativos. **Não precisa instalar Python.** A primeira abertura pode exigir **Ajustes do Sistema → Privacidade e Segurança → Abrir Mesmo Assim**, pois não há notarização Apple. Não desative as proteções do Mac. Para chamadas, é necessário preparar a câmera virtual do OBS; para só visualizar, não.
 
 Testes nativos e confirmação do proprietário em um M1; outras combinações ainda precisam de testes. Antes de usar, leia [Privacidade](PRIVACY.md): o MediaPipe declara métricas e sua atividade de rede segue em investigação. Não anunciamos funcionamento totalmente sem rede. Beta experimental, `distribution_ready=false`.
+
+## Linux — beta para testes
+
+**Ainda não testada em uma máquina Linux real por um usuário; pode apresentar bugs.** Os testes automatizados e autotestes dos executáveis passaram, mas câmera, chamadas e desempenho reais ainda precisam de validação.
+
+[**Baixar Linux x64 (Intel/AMD)**](https://github.com/arantes-gabs/fora-de-cena/releases/download/v0.5.0-beta.1/ForaDeCena-0.5.0-beta.1-linux-x86_64-experimental.tar.gz) · [**Baixar Linux ARM64**](https://github.com/arantes-gabs/fora-de-cena/releases/download/v0.5.0-beta.1/ForaDeCena-0.5.0-beta.1-linux-arm64-experimental.tar.gz) · [Como abrir e testar](LINUX.md)
+
+Extraia e execute `ForaDeCena` dentro da pasta, mantendo os recursos juntos. Não precisa de Python nem sudo. A saída para chamadas exige v4l2loopback configurado no sistema; a prévia funciona sem esse driver. Base Ubuntu 22.04/glibc 2.35; não é um pacote universal para todas as distribuições.
+
+[**Relatar erro ou resultado do teste → GitHub Issues**](https://github.com/arantes-gabs/fora-de-cena/issues/new/choose). Relatos são públicos: remova dados pessoais, credenciais e caminhos privados dos logs. Fontes, avisos e `Linux-SHA256SUMS.txt` acompanham os downloads na Release.
 
 ## Windows — baixar e abrir
 

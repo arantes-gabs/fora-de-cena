@@ -1,6 +1,6 @@
-# Fora de Cena 0.5.0-beta.1 — Apple Silicon · 28/10/2026
+# Fora de Cena 0.5.0-beta.1 — Apple Silicon e Linux · 28/10/2026
 
-Primeiro download público para Mac Apple Silicon, M1 em diante, macOS 15+. **Beta**, com build nativo e autoteste aprovados e funcionamento confirmado pelo proprietário em seu M1. Windows continua em 0.4.0; não há download público Linux ou Intel nesta Release.
+Primeiro download público para Mac Apple Silicon, M1 em diante, macOS 15+. **Beta**, com build nativo e autoteste aprovados e funcionamento confirmado pelo proprietário em seu M1. Windows continua em 0.4.0; Linux x64/ARM64 está disponível como beta sem teste em máquina real; Intel continua sem download público.
 
 ## Baixar
 
@@ -31,3 +31,15 @@ As imagens são processadas no dispositivo. O fornecedor MediaPipe declara métr
 O DMG é exatamente o pacote testado: commit `b80b504a383d123cf834997757a77b764a66e585`. A tag aponta para esse commit. A documentação atualizada está na main. O ZIP de fontes anexado preserva os fontes correspondentes ao build, incluindo seus documentos da época.
 
 Fontes do app, fontes correspondentes do auxiliar independente GPL-2.0-only, avisos de licença e `SHA256SUMS.txt` acompanham o download. Esses arquivos não precisam ser compilados ou instalados pelo usuário. Consulte [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
+## Linux x64/ARM64 — beta para avaliação
+
+**Não foi testada em uma máquina Linux real por um usuário e pode apresentar bugs.** Builds e testes sintéticos passaram no CI; webcam, chamadas e desempenho reais continuam sem validação. Base Ubuntu 22.04/glibc 2.35.
+
+[Baixar Linux x64](https://github.com/arantes-gabs/fora-de-cena/releases/download/v0.5.0-beta.1/ForaDeCena-0.5.0-beta.1-linux-x86_64-experimental.tar.gz) · [Baixar Linux ARM64](https://github.com/arantes-gabs/fora-de-cena/releases/download/v0.5.0-beta.1/ForaDeCena-0.5.0-beta.1-linux-arm64-experimental.tar.gz) · [Guia Linux](LINUX.md).
+
+Extraia e execute `ForaDeCena`, mantendo os recursos juntos. Não precisa instalar Python. Não execute com sudo. Para transmitir em chamadas, configure v4l2loopback conforme o guia; Só prévia não exige câmera virtual.
+
+Os ZIPs de fontes/licenças são específicos de cada arquitetura. Confira os arquivos Linux com `Linux-SHA256SUMS.txt`; o `SHA256SUMS.txt` anterior continua cobrindo o Mac e o ZIP de fontes do app. Nenhum arquivo Mac ou Windows foi substituído. A tag e os binários continuam na 0.5.0-beta.1, mesmo commit de build.
+
+[Relatar erro ou resultado do teste](https://github.com/arantes-gabs/fora-de-cena/issues/new/choose). Relatos são públicos: não envie senhas, tokens, chaves ou dados pessoais.

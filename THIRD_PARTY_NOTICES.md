@@ -1,7 +1,7 @@
 # Licenças e componentes — Fora de Cena
 
 O documento preserva a análise da versão Windows 0.4.0 e identifica abaixo as
-alterações da candidata 0.5.0-beta.1. A beta pública é limitada ao pacote Apple Silicon; os demais alvos continuam em testes.
+alterações da candidata 0.5.0-beta.1. A beta pública inclui Apple Silicon e Linux x64/ARM64; Intel continua em testes.
 
 ## Dois programas independentes
 
@@ -197,3 +197,7 @@ O lançamento usa o DMG do commit b80b504, sem reconstrução ou alteração dos
 Os 256 arquivos do manifesto dos fontes correspondentes da saída tiveram seus SHA-256 conferidos; os ZIPs de fontes e avisos passaram na verificação de integridade. Fontes do app, fontes do auxiliar e avisos são oferecidos na mesma Release e com o mesmo acesso do DMG. Avisos preservados por cautela podem citar componentes não incluídos nos binários. A revisão documental deste escopo não é certificação jurídica geral.
 
 A atividade de rede MediaPipe continua pendente e declarada em PRIVACY.md e nas notas; a beta não afirma ausência de telemetria da dependência. `distribution_ready=false` é preservado nos relatórios originais. Outras plataformas e modificações futuras exigem revisão própria.
+
+## Publicação beta Linux — 28/10/2026
+
+São publicados os pacotes Linux x64/ARM64 já produzidos no commit b80b504 e aprovados nos autotestes nativos. Não há teste em máquina real confirmado. Os builds usam OpenCV mínimo e NumPy próprio sem BLAS/Fortran externos, conforme as proveniências e barreiras de bibliotecas do CI. Cada arquitetura acompanha seus ZIPs de avisos e fontes correspondentes do auxiliar de saída GPL-2.0-only, com hashes conferidos contra os assets do rascunho. Não se reutiliza o ZIP de outra arquitetura para representar seu inventário nativo. `Linux-SHA256SUMS.txt` cobre os seis arquivos adicionados. As pendências de rede e testes físicos permanecem explícitas; não é certificação jurídica ou de compatibilidade geral.

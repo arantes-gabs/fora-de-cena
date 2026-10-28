@@ -1,6 +1,6 @@
 # Histórico de versões
 
-## 0.5.0-beta.1 — 28/10/2026 · beta Apple Silicon
+## 0.5.0-beta.1 — 28/10/2026 · beta Apple Silicon e Linux
 
 - Integração das correções testadas no Mac M1: Configurar em janela nativa no Mac,
   autorização da extensão de câmera do OBS e auditoria do mínimo real do macOS.
@@ -12,7 +12,7 @@
 - Pastas por sistema, pareamento privado em Unix, ícone PNG e restauração local sem Win32.
 - Pillow atualizado para 13.0.0; dependências específicas por marcadores de plataforma.
 - Receita de build nativo experimental, testes dos adaptadores e workflow de testes em branch separada, com execução manual prevista.
-- Publicação limitada ao DMG Apple Silicon validado no CI e testado pelo proprietário no M1. Linux/Intel permanecem experimentais e sem downloads públicos desta versão.
+- Publicação limitada ao DMG Apple Silicon validado no CI e testado pelo proprietário no M1. Linux x64/ARM64 agora é oferecido como beta sem teste em máquina real; Intel continua sem download público.
 - Versão dos pacotes, recursos Windows e metadados do APP separados da versão pública anterior.
 - Compilação enxuta do OpenCV estendida ao Linux, com V4L2/JPEG e sem FFmpeg/Qt.
 - Receita NumPy Linux da mesma versão sem BLAS/Fortran externos, ainda em validação nativa.
@@ -21,6 +21,9 @@
 - Guia de instalação Mac, autorização individual do Gatekeeper e preparação da extensão OBS.
 - Avisos e fontes correspondentes do auxiliar distribuídos ao lado do DMG, com hashes SHA-256.
 - Sem Developer ID/notarização. Verificação ampla de rede permanece pendente; não é versão estável nem certificação de todas as plataformas.
+
+- Pacotes Linux x64/ARM64 liberados para avaliação, com aviso de bugs possíveis e ausência de teste físico.
+- Guia Linux, hashes separados por plataforma e modelos públicos para erros/resultados de testes em Issues.
 
 ## 0.4.0
 

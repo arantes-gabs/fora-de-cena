@@ -34,7 +34,7 @@ As imagens são processadas no dispositivo. O MediaPipe declara métricas de uso
 
 Build nativo, inferência e autoteste do APP passaram. O proprietário confirmou funcionamento no seu M1 em 28/10/2026; não especificou separadamente todos os casos de câmera, chamada ou versão do macOS. Isso não certifica todas as combinações de hardware e serviços. `distribution_ready=false` e `dependency_network_verified=false` permanecem para a beta experimental.
 
-Linux e Intel continuam em testes, sem download público neste lançamento. Windows 0.4.0 permanece disponível. Não há áudio, garantia de 30 FPS ou dispensa do preparo do fundo. Se houver lentidão, tente 640 × 480 e fundo Estático.
+Linux x64/ARM64 também está disponível como beta sem teste em máquina real; veja [LINUX.md](LINUX.md). Intel permanece sem download público. Windows 0.4.0 permanece disponível. Não há áudio, garantia de 30 FPS ou dispensa do preparo do fundo. Se houver lentidão, tente 640 × 480 e fundo Estático.
 
 ## Conferir integridade
 
